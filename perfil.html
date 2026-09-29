@@ -6,368 +6,232 @@
     <title>Mi Perfil - Chamba Express Lima</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            padding-bottom: 90px;
-        }
-        /* Header Verde Degradado */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding-bottom: 90px; }
+        
         .header {
             background: linear-gradient(135deg, #00b064 0%, #00ff88 100%);
-            color: #000;
-            padding: 24px 20px;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2);
+            color: #000; padding: 20px;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
         }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .back-btn {
-            background: rgba(0, 0, 0, 0.15);
-            border: none;
-            color: #000;
-            font-weight: 600;
-            padding: 8px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .header h1 {
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .container {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        /* Tarjeta de Resumen de Perfil */
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(0,0,0,0.15); border: none; color: #000; font-weight: 600; padding: 6px 12px; border-radius: 10px; text-decoration: none; font-size: 13px; cursor: pointer; }
+        
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        
+        /* Tarjeta de Perfil */
         .profile-card {
-            background: #1e1e1e;
-            border: 1px solid #00ff88;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            margin-top: -30px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            background: #1e1e1e; border: 1px solid #00ff88; border-radius: 16px; padding: 20px; text-align: center; margin-top: -10px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
-        .avatar-circle {
-            width: 70px;
-            height: 70px;
-            background: #00ff88;
-            color: #121212;
-            font-size: 28px;
-            font-weight: 700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 12px auto;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        .avatar-container {
+            position: relative; width: 80px; height: 80px; margin: 0 auto 12px auto;
         }
-        .profile-name {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: #ffffff;
+        .avatar-img {
+            width: 80px; height: 80px; background: #00ff88; color: #121212; font-size: 32px; font-weight: 700;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; object-fit: cover;
+            border: 2px solid #00ff88; box-shadow: 0 0 15px rgba(0,255,136,0.4);
         }
-        .profile-district {
-            font-size: 14px;
-            color: #b6ff6e;
-            margin-bottom: 16px;
+        .upload-badge {
+            position: absolute; bottom: 0; right: 0; background: #00ff88; color: #121212; border-radius: 50%;
+            width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; border: 2px solid #1e1e1e;
         }
+        .profile-name { font-size: 18px; font-weight: 700; margin-bottom: 2px; color: #fff; }
+        .profile-district { font-size: 13px; color: #b6ff6e; margin-bottom: 12px; }
+        
         .rating-box {
-            background: #2a2a2a;
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid #333;
+            background: #2a2a2a; border-radius: 10px; padding: 10px; display: flex; justify-content: center; align-items: center; gap: 8px; border: 1px solid #333; margin-bottom: 16px;
         }
-        .rating-stars {
-            color: #ffd700;
-            font-size: 18px;
+        .rating-stars { color: #ffd700; font-size: 16px; }
+        .rating-score { font-size: 16px; font-weight: 700; color: #fff; }
+        .rating-total { font-size: 12px; color: #888; }
+
+        /* Formulario de Edición */
+        .edit-form-box {
+            background: #181818; border: 1px solid #333; border-radius: 12px; padding: 16px; margin-top: 20px; text-align: left;
         }
-        .rating-score {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
+        .edit-form-box h3 { font-size: 14px; color: #00ff88; margin-bottom: 12px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; color: #b6ff6e; margin-bottom: 4px; text-transform: uppercase; }
+        .form-control {
+            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-size: 13px; outline: none;
         }
-        .rating-total {
-            font-size: 13px;
-            color: #888;
+        .form-control:focus { border-color: #00ff88; }
+        .btn-save {
+            background: #00ff88; color: #121212; font-weight: 700; border: none; width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px;
         }
 
-        /* Sección de Comentarios */
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 24px 0 12px 0;
-            color: #ffffff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .comments-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .comment-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-left: 4px solid #00ff88;
-            border-radius: 12px;
-            padding: 16px;
-            transition: border-color 0.2s;
-        }
-        .comment-card:hover {
-            border-color: #00ff88;
-        }
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .comment-author {
-            font-size: 14px;
-            font-weight: 600;
-            color: #b6ff6e;
-        }
-        .comment-stars {
-            font-size: 13px;
-            color: #ffd700;
-        }
-        .comment-text {
-            font-size: 14px;
-            color: #cccccc;
-            line-height: 1.4;
-        }
-        .empty-comments {
-            text-align: center;
-            padding: 30px 20px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            border: 1px dashed #444;
-            color: #888;
-            font-size: 14px;
-        }
+        /* Comentarios */
+        .section-title { font-size: 15px; font-weight: 700; margin: 20px 0 10px 0; color: #fff; }
+        .comments-list { display: flex; flex-direction: column; gap: 10px; }
+        .comment-card { background: #1a1a1a; border: 1px solid #333; border-left: 3px solid #00ff88; border-radius: 10px; padding: 12px; }
+        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .comment-author { font-size: 13px; font-weight: 600; color: #b6ff6e; }
+        .comment-stars { font-size: 12px; color: #ffd700; }
+        .comment-text { font-size: 13px; color: #ccc; }
 
-        /* Botón de simulación para pruebas */
-        .action-container {
-            margin-top: 30px;
-            text-align: center;
-        }
-        .btn-simular {
-            background: transparent;
-            border: 1px dashed #00ff88;
-            color: #00ff88;
-            padding: 10px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .btn-simular:hover {
-            background: rgba(0, 255, 136, 0.05);
-        }
-
-        /* Barra de Navegación Inferior (Idéntica a index.html) */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #1a1a1a;
-            border-top: 1px solid #2a2a2a;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 100;
-        }
-        .nav-item {
-            text-align: center;
-            color: #888;
-            text-decoration: none;
-            font-size: 11px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-        .nav-item.active {
-            color: #00ff88;
-        }
-        .nav-item svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
+        /* Navegación Inferior */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00ff88; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">
         <div class="header-top">
             <a href="index.html" class="back-btn">← Volver</a>
-            <span style="font-size: 13px; font-weight: 600;">⭐ Panel de Reputación</span>
+            <span style="font-size: 12px; font-weight: 600;">⭐ Panel de Usuario</span>
         </div>
-        <h1>Mi Perfil Profesional</h1>
+        <h1 style="font-size: 18px;">Mi Perfil</h1>
     </div>
 
     <div class="container">
-        <!-- Tarjeta Principal del Perfil -->
+        <!-- Tarjeta Perfil -->
         <div class="profile-card">
-            <div class="avatar-circle" id="avatarInitial">J</div>
+            <div class="avatar-container">
+                <div id="avatarDisplay" class="avatar-img">J</div>
+                <label for="inputFoto" class="upload-badge" title="Cambiar foto">📷</label>
+                <input type="file" id="inputFoto" accept="image/*" style="display: none;" onchange="cambiarFoto(event)">
+            </div>
             <div class="profile-name" id="userName">Cargando...</div>
             <div class="profile-district" id="userDistrict">📍 Lima, Perú</div>
 
-            <div class="rating-box">
+            <div class="rating-box" id="ratingBoxContainer">
                 <div class="rating-stars" id="profileStars">⭐⭐⭐⭐⭐</div>
                 <div>
-                    <div class="rating-score"><span id="profileAvg">5.0</span> <span class="rating-total" id="profileCount">(1 calif)</span></div>
+                    <div class="rating-score"><span id="profileAvg">5.0</span> <span class="rating-total" id="profileCount">(1)</span></div>
                 </div>
+            </div>
+
+            <!-- Formulario de Edición de Datos -->
+            <div class="edit-form-box">
+                <h3>Editar mi información</h3>
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="editNombre" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp</label>
+                    <input type="tel" id="editWhatsapp" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Distrito</label>
+                    <input type="text" id="editDistrito" class="form-control">
+                </div>
+                <button type="button" class="btn-save" onclick="guardarCambiosPerfil()">Guardar Cambios</button>
             </div>
         </div>
 
-        <!-- Historial de Calificaciones -->
-        <div class="section-title">
-            <span>Comentarios de Empleadores</span>
-            <span style="font-size: 12px; color: #888;" id="commentCountBadge">0 valoraciones</span>
-        </div>
-
+        <div class="section-title">Historial de Calificaciones</div>
         <div class="comments-list" id="commentsList">
-            <!-- Los comentarios se inyectarán dinámicamente aquí -->
-        </div>
-
-        <!-- Opcional: Botón de prueba para simular una calificación nueva -->
-        <div class="action-container">
-            <button class="btn-simular" onclick="agregarCalifPrueba()">+ Simular calificación de empleador</button>
+            <!-- Se llena por JS -->
         </div>
     </div>
 
-    <!-- Barra de Navegación Inferior -->
+    <!-- Navegación -->
     <nav class="nav-bar">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Buscar
-        </a>
-        <a href="#" class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            Postulaciones
-        </a>
-        <a href="#" class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-            Mensajes
-        </a>
-        <a href="perfil.html" class="nav-item active">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            Perfil
-        </a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Buscar</a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Postulaciones</a>
+        <a href="mensajes.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>Mensajes</a>
+        <a href="perfil.html" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil</a>
     </nav>
 
     <script>
-        // Cargar datos del localStorage
-        const nombre = localStorage.getItem('nombre') || 'Usuario Chamba';
-        const distrito = localStorage.getItem('distrito') || 'Lima Metropolitana';
+        let nombreActual = localStorage.getItem('nombre') || 'Usuario';
+        let rolActual = localStorage.getItem('rol') || 'trabajador';
 
-        document.getElementById('userName').innerText = nombre;
-        document.getElementById('userDistrict').innerText = `📍 ${distrito}, Lima`;
-        document.getElementById('avatarInitial').innerText = nombre.charAt(0).toUpperCase();
-
-        function cargarCalificaciones() {
-            const keyCalif = `califs_${nombre}`;
-            let datosCalif = JSON.parse(localStorage.getItem(keyCalif));
-
-            // Si no existe, inicializamos por defecto con una de 5 estrellas
-            if (!datosCalif) {
-                datosCalif = {
-                    promedio: 5.0,
-                    total: 1,
-                    comentarios: [
-                        { autor: "Carlos Mendoza (Empleador)", estrellas: 5, texto: "Excelente trabajador, muy puntual y responsable en la obra." }
-                    ]
-                };
-                localStorage.setItem(keyCalif, JSON.stringify(datosCalif));
-            }
-
-            // Actualizar header de estrellas
-            document.getElementById('profileAvg').innerText = Number(datosCalif.promedio).toFixed(1);
-            document.getElementById('profileCount').innerText = `(${datosCalif.total} ${datosCalif.total === 1 ? 'calif' : 'califs'})`;
+        function cargarDatosPerfil() {
+            document.getElementById('userName').innerText = nombreActual;
+            document.getElementById('userDistrict').innerText = `📍 ${localStorage.getItem('distrito') || 'Lima'}, Lima`;
             
-            // Generar estrellas visuales
-            let estrellasHTML = '';
-            const estrellasRedondeadas = Math.round(datosCalif.promedio);
-            for(let i=0; i<5; i++) {
-                estrellasHTML += i < estrellasRedondeadas ? '⭐' : '☆';
+            // Cargar inputs del formulario
+            document.getElementById('editNombre').value = nombreActual;
+            document.getElementById('editWhatsapp').value = localStorage.getItem('whatsapp') || '';
+            document.getElementById('editDistrito').value = localStorage.getItem('distrito') || '';
+
+            // Cargar Avatar o foto guardada en base64
+            const avatarContainer = document.getElementById('avatarDisplay');
+            const fotoGuardada = localStorage.getItem(`foto_${nombreActual}`);
+            if(fotoGuardada) {
+                avatarContainer.innerHTML = `<img src="${fotoGuardada}" class="avatar-img" alt="Foto">`;
+            } else {
+                avatarContainer.innerHTML = nombreActual.charAt(0).toUpperCase();
             }
-            document.getElementById('profileStars').innerHTML = estrellasHTML;
 
-            // Renderizar lista de comentarios
-            const listaCont = document.getElementById('commentsList');
-            document.getElementById('commentCountBadge').innerText = `${datosCalif.comentarios.length} valoraciones`;
-
-            if(!datosCalif.comentarios || datosCalif.comentarios.length === 0) {
-                listaCont.innerHTML = `<div class="empty-comments">Aún no tienes comentarios registrados de empleadores.</div>`;
+            // Si es empleador, ocultar caja de estrellas de trabajador
+            if(rolActual === 'empleador') {
+                document.getElementById('ratingBoxContainer').style.display = 'none';
+                document.getElementById('commentsList').innerHTML = `<p style="color:#888; text-align:center; font-size:13px;">Los empleadores no reciben calificaciones de comportamiento.</p>`;
                 return;
             }
 
+            // Cargar Calificaciones de trabajador
+            const keyCalif = `califs_${nombreActual}`;
+            let datosCalif = JSON.parse(localStorage.getItem(keyCalif)) || { promedio: 5.0, total: 1, comentarios: [{ autor: "Sistema", estrellas: 5, texto: "¡Bienvenido a Chamba Express!" }] };
+
+            document.getElementById('profileAvg').innerText = Number(datosCalif.promedio).toFixed(1);
+            document.getElementById('profileCount').innerText = `(${datosCalif.total})`;
+
             let htmlComentarios = '';
             datosCalif.comentarios.forEach(c => {
-                let ests = '⭐'.repeat(c.estrellas);
                 htmlComentarios += `
                     <div class="comment-card">
                         <div class="comment-header">
                             <span class="comment-author">🏢 ${c.autor}</span>
-                            <span class="comment-stars">${ests}</span>
+                            <span class="comment-stars">${'⭐'.repeat(c.estrellas)}</span>
                         </div>
                         <div class="comment-text">"${c.texto}"</div>
                     </div>
                 `;
             });
-            listaCont.innerHTML = htmlComentarios;
+            document.getElementById('commentsList').innerHTML = htmlComentarios;
         }
 
-        // Función auxiliar para probar añadiendo comentarios dinámicos
-        function agregarCalifPrueba() {
-            const keyCalif = `califs_${nombre}`;
-            let datosCalif = JSON.parse(localStorage.getItem(keyCalif)) || { promedio: 5.0, total: 0, comentarios: [] };
-            
-            const nuevosComentarios = [
-                { autor: "Constructora Lima SAC", estrellas: 5, texto: "Llegó temprano y terminó la chamba con excelente acabado. Recomendadísimo." },
-                { autor: "María Fernanda", estrellas: 4, texto: "Muy ordenado al limpiar la casa, volvería a contratarlo." }
-            ];
-            
-            // Agregar uno aleatorio para probar
-            const ej = nuevosComentarios[Math.floor(Math.random() * nuevosComentarios.length)];
-            datosCalif.comentarios.unshift(ej); // Poner al inicio
-            datosCalif.total = datosCalif.comentarios.length;
-            
-            // Recalcular promedio simple
-            let suma = datosCalif.comentarios.reduce((acc, curr) => acc + curr.estrellas, 0);
-            datosCalif.promedio = (suma / datosCalif.total).toFixed(1);
+        function cambiarFoto(event) {
+            const archivo = event.target.files[0];
+            if(!archivo) return;
 
-            localStorage.setItem(keyCalif, JSON.stringify(datosCalif));
-            cargarCalificaciones();
+            const lector = new FileReader();
+            lector.onload = function(e) {
+                const base64Image = e.target.result;
+                localStorage.setItem(`foto_${nombreActual}`, base64Image);
+                cargarDatosPerfil();
+                alert('¡Foto de perfil actualizada con éxito!');
+            };
+            lector.readAsDataURL(archivo);
         }
 
-        // Ejecutar al cargar
-        cargarCalificaciones();
+        function guardarCambiosPerfil() {
+            const nuevoNombre = document.getElementById('editNombre').value.trim();
+            const nuevoWp = document.getElementById('editWhatsapp').value.trim();
+            const nuevoDistrito = document.getElementById('editDistrito').value.trim();
+
+            if(!nuevoNombre || !nuevoWp || !nuevoDistrito) {
+                alert('⚠️ Todos los campos son obligatorios.');
+                return;
+            }
+
+            // Actualizar localStorage principal
+            localStorage.setItem('nombre', nuevoNombre);
+            localStorage.setItem('whatsapp', nuevoWp);
+            localStorage.setItem('distrito', nuevoDistrito);
+
+            // Si cambió el nombre, migrar calificaciones o datos clave si existían
+            if(nuevoNombre !== nombreActual) {
+                const califsAntiguas = localStorage.getItem(`califs_${nombreActual}`);
+                if(califsAntiguas) {
+                    localStorage.setItem(`califs_${nuevoNombre}`, califsAntiguas);
+                    localStorage.removeItem(`califs_${nombreActual}`);
+                }
+            }
+
+            nombreActual = nuevoNombre;
+            alert('¡Información de perfil actualizada correctamente!');
+            cargarDatosPerfil();
+        }
+
+        cargarDatosPerfil();
     </script>
 </body>
 </html>
