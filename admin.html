@@ -27,11 +27,20 @@
         
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 12px; color: #b6ff6e; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
-        .input-box, textarea {
-            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none; resize: vertical;
+        .input-box, textarea, select {
+            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none;
         }
-        .input-box:focus, textarea:focus { border-color: #00ff88; }
+        .input-box:focus, textarea:focus, select:focus { border-color: #00ff88; }
         
+        .code-editor {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            background: #0a0a0a;
+            color: #00ff88;
+            height: 250px;
+            line-height: 1.4;
+        }
+
         .btn-action {
             background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 6px;
         }
@@ -82,41 +91,60 @@
             </div>
         </div>
 
-        <!-- 1. CREAR NUEVAS FUNCIONES / SECCIONES CUSTOM -->
-        <div class="admin-card" style="border: 2px dashed #00ff88;">
+        <!-- 1. EDITOR DE CÓDIGO INTERNO (TIPO GITHUB) -->
+        <div class="admin-card" style="border: 2px solid #00ff88;">
+            <h3>💻 Editor de Código Interno (GitHub Simulator)</h3>
+            <div class="form-group">
+                <label>Selecciona el archivo a editar</label>
+                <select id="archivoSelect" class="input-box" onchange="cargarCodigoArchivo()">
+                    <option value="index">index.html (Pantalla Principal)</option>
+                    <option value="perfil">perfil.html (Mi Perfil)</option>
+                    <option value="publicar">publicar.html (Publicar Chamba)</option>
+                    <option value="mensajes">mensajes.html (Mensajes)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Código Fuente (HTML / CSS / JS)</label>
+                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Aquí aparecerá el código del archivo..."></textarea>
+            </div>
+            <button class="btn-action" onclick="guardarCodigoInterno()">💾 Guardar y Aplicar Cambios</button>
+        </div>
+
+        <!-- 2. CREAR NUEVAS FUNCIONES -->
+        <div class="admin-card">
             <h3>🚀 Agregar Nueva Función a la App</h3>
             <div class="form-group">
                 <label>Nombre de la Función o Sección</label>
-                <input type="text" id="nuevoNombreFuncion" class="input-box" placeholder="Ej: Préstamos Express o Bolsa de Empleo Extra">
+                <input type="text" id="nuevoNombreFuncion" class="input-box" placeholder="Ej: Bolsa de Préstamos">
             </div>
             <div class="form-group">
-                <label>Icono o Emoji representativo</label>
-                <input type="text" id="nuevoIconoFuncion" class="input-box" placeholder="Ej: 🚀 o 💳">
+                <label>Icono o Emoji</label>
+                <input type="text" id="nuevoIconoFuncion" class="input-box" placeholder="Ej: 💳">
             </div>
             <div class="form-group">
-                <label>Descripción corta de la función</label>
-                <input type="text" id="nuevoDescFuncion" class="input-box" placeholder="Ej: Acceso a créditos rápidos para trabajadores">
+                <label>Descripción</label>
+                <input type="text" id="nuevoDescFuncion" class="input-box" placeholder="Créditos rápidos">
             </div>
-            <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Crear e Integrar Función</button>
+            <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Integrar Función</button>
         </div>
 
         <!-- Listado de Funciones Creadas -->
         <div class="admin-card">
-            <h3>⚙️ Funciones Personalizadas Activas</h3>
+            <h3>⚙️ Funciones Personalizadas</h3>
             <div id="listaFuncionesAdmin"></div>
         </div>
 
-        <!-- 2. Publicar Anuncio Global -->
+        <!-- 3. Anuncio Global -->
         <div class="admin-card">
             <h3>📢 Publicar Anuncio Global</h3>
             <div class="form-group">
-                <label>Mensaje o comunicado para los usuarios</label>
-                <textarea id="anuncioInput" rows="2" placeholder="Ej: ¡Atención! Nuevas ofertas disponibles..."></textarea>
+                <label>Mensaje para los usuarios</label>
+                <textarea id="anuncioInput" rows="2" placeholder="Ej: Nuevas ofertas disponibles..."></textarea>
             </div>
-            <button class="btn-action" onclick="publicarAnuncioMaster()">Lanzar Anuncio en la App</button>
+            <button class="btn-action" onclick="publicarAnuncioMaster()">Lanzar Anuncio</button>
         </div>
 
-        <!-- 3. Control de Módulos Base -->
+        <!-- 4. Control de Módulos Base -->
         <div class="admin-card">
             <h3>⚡ Módulos del Sistema</h3>
             <div class="toggle-row">
@@ -133,32 +161,28 @@
             </div>
         </div>
 
-        <!-- 4. Agregar Nuevo Rubro -->
+        <!-- 5. Rubros -->
         <div class="admin-card">
             <h3>➕ Agregar Nuevo Rubro</h3>
             <div class="form-group">
-                <label>Nombre del Rubro (ej: Seguridad, Electricidad)</label>
-                <input type="text" id="nuevoRubroInput" class="input-box" placeholder="Ej: Electricidad y Gasfitería">
+                <label>Nombre del Rubro</label>
+                <input type="text" id="nuevoRubroInput" class="input-box" placeholder="Ej: Electricidad">
             </div>
             <button class="btn-action" onclick="agregarRubroMaster()">Añadir Rubro</button>
         </div>
-
-        <!-- 5. Rubros Activos -->
         <div class="admin-card">
             <h3>📂 Rubros Activos</h3>
             <div id="listaRubrosAdmin"></div>
         </div>
 
-        <!-- 6. Control de Usuarios -->
+        <!-- 6. Usuarios y Chambas -->
         <div class="admin-card">
-            <h3>👥 Usuarios Registrados en la App</h3>
-            <div id="listaUsuariosAdmin" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+            <h3>👥 Usuarios Registrados</h3>
+            <div id="listaUsuariosAdmin" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
-
-        <!-- 7. Moderación de Chambas -->
         <div class="admin-card">
             <h3>🗑️ Moderación de Chambas</h3>
-            <div id="listaAvisosAdmin" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div id="listaAvisosAdmin" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
     </div>
 
@@ -187,16 +211,18 @@
             document.getElementById('statUsuarios').innerText = usuarios.length;
             document.getElementById('statRubros').innerText = rubros.length;
 
-            // Cargar estado de módulos base
             let modulos = JSON.parse(localStorage.getItem('modulos_config')) || { chat: true, calif: true, urgente: true };
             document.getElementById('modChat').checked = modulos.chat;
             document.getElementById('modCalif').checked = modulos.calif;
             document.getElementById('modUrgente').checked = modulos.urgente;
 
+            // Cargar código del archivo seleccionado inicialmente
+            cargarCodigoArchivo();
+
             // Renderizar Funciones Custom
             let htmlFunciones = '';
             if(funcionesCustom.length === 0) {
-                htmlFunciones = `<p style="color:#888; font-size:12px; text-align:center;">No hay funciones adicionales creadas todavía.</p>`;
+                htmlFunciones = `<p style="color:#888; font-size:12px; text-align:center;">No hay funciones adicionales.</p>`;
             } else {
                 funcionesCustom.forEach((f, idx) => {
                     htmlFunciones += `
@@ -227,7 +253,7 @@
             // Renderizar Usuarios
             let htmlUsuarios = '';
             if(usuarios.length === 0) {
-                htmlUsuarios = `<p style="color:#888; font-size:12px; text-align:center;">No hay usuarios registrados.</p>`;
+                htmlUsuarios = `<p style="color:#888; font-size:12px; text-align:center;">No hay usuarios.</p>`;
             } else {
                 usuarios.forEach((u, idx) => {
                     htmlUsuarios += `
@@ -246,7 +272,7 @@
             // Renderizar Avisos
             let htmlAvisos = '';
             if(avisos.length === 0) {
-                htmlAvisos = `<p style="color:#888; font-size:12px; text-align:center;">No hay avisos publicados.</p>`;
+                htmlAvisos = `<p style="color:#888; font-size:12px; text-align:center;">No hay avisos.</p>`;
             } else {
                 avisos.forEach(a => {
                     htmlAvisos += `
@@ -263,13 +289,36 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
+        // Lógica del Editor de Código Interno
+        function cargarCodigoArchivo() {
+            const archivo = document.getElementById('archivoSelect').value;
+            const key = `codigo_archivo_${archivo}`;
+            const codigoGuardado = localStorage.getItem(key);
+
+            if(codigoGuardado) {
+                document.getElementById('editorCodigo').value = codigoGuardado;
+            } else {
+                // Si no hay edición local, mostrar texto guía
+                document.getElementById('editorCodigo').value = `<!-- Edita aquí el código fuente de ${archivo}.html -->\n<!-- Los cambios se guardarán en tu navegador. -->`;
+            }
+        }
+
+        function guardarCodigoInterno() {
+            const archivo = document.getElementById('archivoSelect').value;
+            const codigo = document.getElementById('editorCodigo').value;
+            const key = `codigo_archivo_${archivo}`;
+
+            localStorage.setItem(key, codigo);
+            alert(`¡Código de ${archivo}.html actualizado y guardado correctamente en la app!`);
+        }
+
         function crearNuevaFuncionApp() {
             const nombre = document.getElementById('nuevoNombreFuncion').value.trim();
             const icono = document.getElementById('nuevoIconoFuncion').value.trim() || '⭐';
-            const desc = document.getElementById('nuevoDescFuncion').value.trim() || 'Nueva función de Chamba Express';
+            const desc = document.getElementById('nuevoDescFuncion').value.trim() || 'Nueva función';
 
             if(!nombre) {
-                alert('Escribe el nombre de la nueva función.');
+                alert('Escribe el nombre.');
                 return;
             }
 
@@ -281,12 +330,12 @@
             document.getElementById('nuevoIconoFuncion').value = '';
             document.getElementById('nuevoDescFuncion').value = '';
 
-            alert(`¡Función "${nombre}" creada e integrada exitosamente!`);
+            alert(`¡Función "${nombre}" creada con éxito!`);
             cargarPanelAdmin();
         }
 
         function eliminarFuncionCustom(idx) {
-            if(confirm('¿Eliminar esta función de la app?')) {
+            if(confirm('¿Eliminar esta función?')) {
                 let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
                 funciones.splice(idx, 1);
                 localStorage.setItem('funciones_custom', JSON.stringify(funciones));
@@ -296,13 +345,10 @@
 
         function publicarAnuncioMaster() {
             const texto = document.getElementById('anuncioInput').value.trim();
-            if(!texto) {
-                alert('Escribe un texto para el anuncio.');
-                return;
-            }
+            if(!texto) return;
             localStorage.setItem('anuncio_global', texto);
             document.getElementById('anuncioInput').value = '';
-            alert('¡Anuncio lanzado con éxito en la pantalla principal!');
+            alert('¡Anuncio lanzado!');
         }
 
         function guardarModulos() {
@@ -318,10 +364,7 @@
             const nuevo = document.getElementById('nuevoRubroInput').value.trim();
             if(!nuevo) return;
             let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
-            if(rubros.includes(nuevo)) {
-                alert('El rubro ya existe.');
-                return;
-            }
+            if(rubros.includes(nuevo)) return;
             rubros.push(nuevo);
             localStorage.setItem('rubros_custom', JSON.stringify(rubros));
             document.getElementById('nuevoRubroInput').value = '';
@@ -336,21 +379,17 @@
         }
 
         function eliminarUsuario(idx) {
-            if(confirm('¿Eliminar este usuario?')) {
-                let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
-                usuarios.splice(idx, 1);
-                localStorage.setItem('usuarios_db', JSON.stringify(usuarios));
-                cargarPanelAdmin();
-            }
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+            usuarios.splice(idx, 1);
+            localStorage.setItem('usuarios_db', JSON.stringify(usuarios));
+            cargarPanelAdmin();
         }
 
         function eliminarAvisoAdmin(id) {
-            if(confirm('¿Eliminar esta chamba?')) {
-                let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
-                avisos = avisos.filter(a => a.id !== id);
-                localStorage.setItem('avisos', JSON.stringify(avisos));
-                cargarPanelAdmin();
-            }
+            let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+            avisos = avisos.filter(a => a.id !== id);
+            localStorage.setItem('avisos', JSON.stringify(avisos));
+            cargarPanelAdmin();
         }
 
         cargarPanelAdmin();
