@@ -1,28 +1,171 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
-*{font-family:Arial,sans-serif;box-sizing:border-box}body{background:#0f0f0f;color:white;padding:20px}
-input,select{width:100%;padding:15px;margin:8px 0;border-radius:12px;border:1px solid #333;background:#1e1e1e;color:white;font-size:15px}
-.btn{background:#00ff88;color:black;border:none;padding:16px;width:100%;border-radius:15px;font-weight:800;font-size:16px;margin-top:15px}
-.back{color:#00ff88;text-decoration:none}
-.card{background:#1e1e1e;padding:20px;border-radius:20px;margin-top:15px;border:1px solid #333}
-</style></head><body>
-<a href="index.html" class="back">← Volver</a>
-<h2 style="margin-top:15px">Publicar Chamba</h2>
-<p style="color:#aaa;font-size:13px">Los trabajadores te escribirán directo a tu WhatsApp</p>
-<div class="card">
-<select id="rubro"><option>Construccion</option><option>Mudanza</option><option>Limpieza</option><option>Cocina</option><option>Delivery</option><option>Gamarra</option><option>Seguridad</option><option>Barbería</option></select>
-<input id="titulo" placeholder="¿Qué necesitas? Ej: 2 ayudantes para mudanza">
-<input id="distrito" placeholder="Distrito Ej: Gamarra - La Victoria">
-<input id="pago" placeholder="Pago Ej: S/ 80 por día">
-<input id="whatsapp" placeholder="Tu WhatsApp 9XXXXXXXX">
-<input id="nombreEmp" placeholder="Tu nombre / empresa">
-<button class="btn" onclick="publicar()">PUBLICAR AHORA 🚀</button>
-</div>
-<script>
-function publicar(){
- let avisos=JSON.parse(localStorage.getItem('avisos')||'[]');
- avisos.unshift({rubro:rubro.value,titulo:titulo.value,distrito:distrito.value,pago:pago.value,whatsapp:whatsapp.value,tag:'NUEVO'});
- localStorage.setItem('avisos',JSON.stringify(avisos));
- alert('¡Chamba publicada! Ya aparece en inicio'); location.href='index.html';
-}
-</script></body></html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Chamba - Chamba Express Lima</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding-bottom: 90px; }
+        .header {
+            background: linear-gradient(135deg, #00b064 0%, #00ff88 100%);
+            color: #000; padding: 20px;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(0,0,0,0.15); border: none; color: #000; font-weight: 600; padding: 6px 12px; border-radius: 10px; text-decoration: none; font-size: 13px; }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        .form-card { background: #1e1e1e; border: 1px solid #333; border-radius: 14px; padding: 20px; margin-bottom: 24px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 13px; color: #b6ff6e; margin-bottom: 6px; font-weight: 500; }
+        input, select, textarea {
+            width: 100%; background: #121212; border: 1px solid #333; color: #fff;
+            padding: 12px; border-radius: 10px; font-size: 14px; outline: none;
+        }
+        input:focus, select:focus, textarea:focus { border-color: #00ff88; }
+        .btn-submit {
+            background: #00ff88; color: #121212; font-weight: 700; border: none;
+            width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; cursor: pointer; margin-top: 10px;
+        }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; color: #fff; border-left: 4px solid #00ff88; padding-left: 8px; }
+        .my-avisos-list { display: flex; flex-direction: column; gap: 12px; }
+        .aviso-item { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .aviso-info h4 { font-size: 15px; color: #fff; margin-bottom: 4px; }
+        .aviso-info p { font-size: 12px; color: #888; }
+        .btn-delete { background: #ff4d4d; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 600; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00ff88; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <a href="index.html" class="back-btn">← Volver</a>
+            <span style="font-size: 13px; font-weight: 600;">🏢 Panel Empleador</span>
+        </div>
+        <h1 style="font-size: 20px;">Publicar Nueva Chamba</h1>
+    </div>
+
+    <div class="container">
+        <!-- Formulario -->
+        <div class="form-card">
+            <form id="formPublicar" onsubmit="publicarChamba(event)">
+                <div class="form-group">
+                    <label>Rubro</label>
+                    <select id="rubro" required>
+                        <option value="Construcción">Construcción</option>
+                        <option value="Mudanzas">Mudanzas</option>
+                        <option value="Limpieza">Limpieza</option>
+                        <option value="Cocina">Cocina</option>
+                        <option value="Delivery">Delivery</option>
+                        <option value="Gamarra">Gamarra</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Título del puesto (ej: Ayudante de obra)</label>
+                    <input type="text" id="titulo" placeholder="Ej: Maestro de obra urgente" required>
+                </div>
+                <div class="form-group">
+                    <label>Distrito en Lima</label>
+                    <input type="text" id="distrito" placeholder="Ej: Carabayllo, Comas, San Miguel..." required>
+                </div>
+                <div class="form-group">
+                    <label>Pago en S/. (ej: S/ 100 /día)</label>
+                    <input type="text" id="pago" placeholder="S/ 120 /día" required>
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp de contacto</label>
+                    <input type="tel" id="whatsapp" placeholder="912345678" required>
+                </div>
+                <button type="submit" class="btn-submit">Publicar Chamba Ahora</button>
+            </form>
+        </div>
+
+        <!-- Sección de Mis Avisos Publicados (Opción 3) -->
+        <div class="section-title">Mis Avisos Publicados</div>
+        <div class="my-avisos-list" id="listaMisAvisos">
+            <!-- Se inyecta por JS -->
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Buscar</a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Postulaciones</a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>Mensajes</a>
+        <a href="perfil.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil</a>
+    </nav>
+
+    <script>
+        const empleadorActual = localStorage.getItem('nombre') || 'Empleador Anónimo';
+
+        // Pre-llenar whatsapp si existe en localStorage
+        if(localStorage.getItem('whatsapp')) {
+            document.getElementById('whatsapp').value = localStorage.getItem('whatsapp');
+        }
+
+        function publicarChamba(e) {
+            e.preventDefault();
+            const nuevoAviso = {
+                id: Date.now(),
+                titulo: document.getElementById('titulo').value,
+                rubro: document.getElementById('rubro').value,
+                distrito: document.getElementById('distrito').value,
+                pago: document.getElementById('pago').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                empleador: empleadorActual,
+                fecha: "Hoy",
+                tag: "NUEVO"
+            };
+
+            let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+            avisos.unshift(nuevoAviso);
+            localStorage.setItem('avisos', JSON.stringify(avisos));
+
+            alert('¡Chamba publicada con éxito!');
+            document.getElementById('formPublicar').reset();
+            cargarMisAvisos();
+        }
+
+        function cargarMisAvisos() {
+            let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+            // Filtrar solo los avisos creados por este empleador
+            const misAvisos = avisos.filter(a => a.empleador === empleadorActual);
+            const contenedor = document.getElementById('listaMisAvisos');
+
+            if(misAvisos.length === 0) {
+                contenedor.innerHTML = `<p style="color:#888; font-size:13px; text-align:center; padding:15px;">No has publicado ningún aviso todavía.</p>`;
+                return;
+            }
+
+            let html = '';
+            misAvisos.forEach(aviso => {
+                html += `
+                    <div class="aviso-item">
+                        <div class="aviso-info">
+                            <h4>${aviso.titulo}</h4>
+                            <p>📍 ${aviso.distrito} • 💰 ${aviso.pago} (${aviso.rubro})</p>
+                        </div>
+                        <button class="btn-delete" onclick="eliminarAviso(${aviso.id})">Eliminar</button>
+                    </div>
+                `;
+            });
+            contenedor.innerHTML = html;
+        }
+
+        function eliminarAviso(id) {
+            if(confirm('¿Estás seguro de eliminar este aviso?')) {
+                let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+                avisos = avisos.filter(a => a.id !== id);
+                localStorage.setItem('avisos', JSON.stringify(avisos));
+                cargarMisAvisos();
+            }
+        }
+
+        cargarMisAvisos();
+    </script>
+</body>
+</html>
