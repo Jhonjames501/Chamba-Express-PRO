@@ -1,30 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chamba Express Lima</title>
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+body{background:#0f0f0f;color:white;padding-bottom:90px}
+.header{background:linear-gradient(135deg,#00ff88 0%,#00cc66 100%);padding:20px;border-radius:0 0 30px 30px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;gap:10px;align-items:center}
+.logo-icon{width:50px;height:50px;background:black;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
+.header h1{color:black;line-height:1;font-size:24px}
+.header p{color:black;font-size:14px;margin-top:5px}
+.search-box{background:white;border-radius:20px;padding:5px 15px;display:flex;align-items:center;margin-top:15px;box-shadow:0 10px 20px rgba(0,0,0,.3)}
+.search-box input{flex:1;border:none;padding:12px;outline:none;font-size:14px;color:#333}
+.rubros{display:flex;gap:8px;overflow-x:auto;padding:15px 10px;scrollbar-width:none}
+.rubros button{white-space:nowrap;border:none;padding:14px 18px;border-radius:15px;font-weight:800;background:#1e1e1e;color:white;min-width:110px}
+.rubros button.active{background:#00ff88;color:black}
+.section{padding:15px}
+.card{background:#1e1e1e;border:1.5px solid #00ff88;border-radius:18px;padding:15px;margin-bottom:12px;position:relative}
+.badge{background:#b6ff6e;color:black;font-size:11px;font-weight:800;padding:4px 8px;border-radius:6px;display:inline-block;margin-bottom:6px}
+.card h3{font-size:17px;margin-bottom:4px}
+.card small{color:#aaa}
+.price{color:#00ff88;font-weight:800;font-size:20px;margin-top:8px}
+.wa-btn{background:#00ff88;color:black;border:none;padding:10px 20px;border-radius:12px;font-weight:800;float:right;margin-top:-30px}
+.btn-main{display:block;background:#00ff88;color:black;text-align:center;padding:16px;border-radius:15px;font-weight:800;text-decoration:none;margin:10px 15px}
+.btn-sec{display:block;background:black;border:1.5px solid #333;color:white;text-align:center;padding:14px;border-radius:15px;text-decoration:none;margin:0 15px}
+.nav{position:fixed;bottom:10px;left:10px;right:10px;background:#1a1a1a;border-radius:25px;display:flex;justify-content:space-around;padding:12px 0;border:1px solid #333}
+.nav div{text-align:center;color:#666;font-size:11px}
+.nav .active{color:#00ff88}
+</style>
 </head>
 <body>
-<h1>Chamba Express Lima 🔥</h1>
-<input type="text" id="buscador" placeholder="Busca: mudanza, Gamarra, S/80..." onkeyup="filtrar()">
 
-<div id="rubros">
-<button onclick="filtrarRubro('Construccion')">🏗️ Construcción</button>
-<button onclick="filtrarRubro('Mudanza')">📦 Mudanza</button>
-<button onclick="filtrarRubro('Limpieza')">🧹 Limpieza</button>
-<button onclick="filtrarRubro('Cocina')">🍳 Cocina</button>
-<button onclick="filtrarRubro('Delivery')">🛵 Delivery</button>
-<button onclick="filtrarRubro('Gamarra')">👕 Gamarra</button>
-<button onclick="filtrarRubro('Todos')">Ver Todo</button>
+<div class="header">
+<div class="top">
+<div class="logo"><div class="logo-icon">💼</div><div><h1>Chamba<br>Express</h1><p>📍 Lima • Perú</p></div></div>
+<div style="font-size:24px">🔔 👤</div>
+</div>
+<h2 style="color:black;margin-top:15px;font-size:26px;">Encuentra chambas diarias</h2>
+<p style="color:#003a1f;font-weight:600">Trabajos por día, cerca de ti • Pago en S/</p>
+<div class="search-box">
+<span>🔍</span><input id="buscador" placeholder="Busca: limpieza, delivery, construcción..." onkeyup="filtrar()">
+</div>
 </div>
 
-<div id="avisos"></div>
+<div class="rubros">
+<button class="active" onclick="filtrarRubro('Todos')">Todos</button>
+<button onclick="filtrarRubro('Construccion')">🏗️ Construcción</button>
+<button onclick="filtrarRubro('Mudanza')">🚚 Mudanzas</button>
+<button onclick="filtrarRubro('Limpieza')">✨ Limpieza</button>
+<button onclick="filtrarRubro('Cocina')">👨‍🍳 Cocina</button>
+<button onclick="filtrarRubro('Delivery')">🛵 Delivery</button>
+<button onclick="filtrarRubro('Gamarra')">👕 Gamarra</button>
+</div>
 
-<a href="publicar.html" class="btn">+ PUBLICAR CHAMBA (Empleador)</a>
-<a href="registro.html" class="btn2">REGISTRARME COMO TRABAJADOR</a>
+<div class="section">
+<div style="display:flex;justify-content:space-between"><h3>Chambas destacadas hoy</h3><span style="color:#00ff88">Ver todo (24)</span></div>
+<div id="avisos" style="margin-top:15px"></div>
+</div>
 
-<script src="app.js"></script>
+<a href="publicar.html" class="btn-main">+ PUBLICAR CHAMBA (Empleador)</a>
+<a href="registro.html" class="btn-sec">REGISTRARME COMO TRABAJADOR</a>
+
+<div class="nav">
+<div class="active">🏠<br>Buscar</div><div>📋<br>Postulaciones</div><div>💬<br>Mensajes</div><div>👤<br>Perfil</div>
+</div>
+
+<script>
+let avisos = JSON.parse(localStorage.getItem('avisos')||'[]');
+if(avisos.length==0){
+ avisos=[
+  {rubro:'Construccion',titulo:'Maestro de obra - remodelación',distrito:'San Miguel, Lima • Hoy',pago:'S/ 120 /día',whatsapp:'999999999',tag:'URGENTE'},
+  {rubro:'Mudanza',titulo:'Mudanza apto 2 dorm - ayudante',distrito:'Miraflores, Lima • Hoy 14:00',pago:'S/ 80 /hora',whatsapp:'999999999',tag:'NUEVO'},
+  {rubro:'Limpieza',titulo:'Limpieza de casa - 4 horas',distrito:'Surco, Lima • Mañana 9am',pago:'S/ 60',whatsapp:'999999999',tag:'NUEVO'}
+ ];
+}
+function mostrar(lista){
+ document.getElementById('avisos').innerHTML=lista.map(a=>`
+ <div class="card">
+  <span class="badge">${a.tag||'NUEVO'}</span>
+  <h3>${a.titulo}</h3>
+  <small>📍 ${a.distrito}</small>
+  <div class="price">${a.pago}</div>
+  <a href="https://wa.me/51${a.whatsapp}?text=Hola, soy ${localStorage.getItem('nombre')||'trabajador'} vi tu chamba de ${a.titulo} en Chamba Express" target="_blank"><button class="wa-btn">WhatsApp</button></a>
+ </div>
+ `).join('');
+}
+function filtrar(){
+ let t=document.getElementById('buscador').value.toLowerCase();
+ mostrar(avisos.filter(a=>(a.titulo+a.distrito+a.rubro).toLowerCase().includes(t)));
+}
+function filtrarRubro(r){
+ document.querySelectorAll('.rubros button').forEach(b=>b.classList.remove('active'));
+ event.target.classList.add('active');
+ if(r=='Todos') mostrar(avisos); else mostrar(avisos.filter(a=>a.rubro==r));
+}
+mostrar(avisos);
+</script>
 </body>
 </html>
