@@ -99,6 +99,19 @@
             margin-left: 8px;
         }
 
+        /* Banner de Anuncios Globales */
+        .global-banner {
+            display: none;
+            background: #b6ff6e;
+            color: #121212;
+            padding: 12px 16px;
+            margin: 15px 20px 0 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
         /* Categorías / Rubros Horizontales */
         .rubros-scroll {
             display: flex;
@@ -152,7 +165,7 @@
             font-weight: 600;
         }
 
-        /* Cards de Chambas (Estilo exacto solicitado con borde #00ff88 y badge #b6ff6e) */
+        /* Cards de Chambas */
         .cards-list {
             display: flex;
             flex-direction: column;
@@ -322,6 +335,11 @@
         </div>
     </div>
 
+    <!-- Banner de Anuncios Globales del Administrador -->
+    <div id="bannerAnuncioGlobal" class="global-banner">
+        📢 <span id="textoAnuncioGlobal"></span>
+    </div>
+
     <!-- Menú Lateral Hamburguesa (Sidebar) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar-menu" id="sidebarMenu">
@@ -335,6 +353,8 @@
                 <a href="perfil.html" class="sidebar-link">⭐ Mi Perfil y Foto</a>
                 <a href="mensajes.html" class="sidebar-link">💬 Mensajes</a>
                 <a href="publicar.html" class="sidebar-link" id="linkPublicarSidebar" style="display:none;">➕ Publicar Chamba</a>
+                <!-- Enlace exclusivo de Administrador para Jhon -->
+                <a href="admin.html" class="sidebar-link" id="linkAdminSidebar" style="display:none; border: 1px dashed #00ff88; color: #00ff88;">👑 Panel de Control (Admin)</a>
             </div>
         </div>
         <div class="sidebar-footer">
@@ -342,15 +362,9 @@
         </div>
     </div>
 
-    <!-- Categorías / Rubros Horizontales -->
+    <!-- Categorías / Rubros Horizontales (Dinámicos) -->
     <div class="rubros-scroll" id="rubrosContainer">
-        <div class="rubro-chip active" onclick="seleccionarRubro('Todos', this)">Todos</div>
-        <div class="rubro-chip" onclick="seleccionarRubro('Construcción', this)">🧱 Construcción</div>
-        <div class="rubro-chip" onclick="seleccionarRubro('Mudanzas', this)">📦 Mudanzas</div>
-        <div class="rubro-chip" onclick="seleccionarRubro('Limpieza', this)">✨ Limpieza</div>
-        <div class="rubro-chip" onclick="seleccionarRubro('Cocina', this)">🍳 Cocina</div>
-        <div class="rubro-chip" onclick="seleccionarRubro('Delivery', this)">🛵 Delivery</div>
-        <div class="rubro-chip" onclick="seleccionarRubro('Gamarra', this)">🧵 Gamarra</div>
+        <!-- Se inyecta por JS -->
     </div>
 
     <div class="container">
@@ -401,7 +415,7 @@
         const rolUsuario = localStorage.getItem('rol') || 'trabajador';
         let rubroSeleccionado = 'Todos';
 
-        // Configurar Header y Sidebar según rol
+        // Configurar Header y Sidebar según rol y permisos de admin
         document.getElementById('headerUserRole').innerText = `${nombreUsuario} • ${rolUsuario === 'empleador' ? '🏢 Empleador' : '🙋‍♂️ Trabajador'}`;
         document.getElementById('sidebarUserName').innerText = nombreUsuario;
         document.getElementById('sidebarUserRol').innerText = rolUsuario === 'empleador' ? '🏢 Empleador' : '🙋‍♂️ Trabajador';
@@ -409,6 +423,18 @@
         if(rolUsuario === 'empleador') {
             document.getElementById('btnPublicarMain').style.display = 'block';
             document.getElementById('linkPublicarSidebar').style.display = 'flex';
+        }
+
+        // Mostrar botón de Admin exclusivamente si el usuario es Jhon
+        if(nombreUsuario.toLowerCase() === 'jhon') {
+            document.getElementById('linkAdminSidebar').style.display = 'flex';
+        }
+
+        // Verificar si hay un anuncio global activo escrito por el admin
+        const anuncioActivo = localStorage.getItem('anuncio_global');
+        if(anuncioActivo) {
+            document.getElementById('textoAnuncioGlobal').innerText = anuncioActivo;
+            document.getElementById('bannerAnuncioGlobal').style.display = 'block';
         }
 
         function toggleMenu() {
@@ -425,6 +451,19 @@
                 localStorage.removeItem('rol');
                 location.href = 'login.html';
             }
+        }
+
+        // Cargar Rubros Dinámicos
+        function cargarRubrosDinamicos() {
+            let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
+            const contenedor = document.getElementById('rubrosContainer');
+            
+            let html = `<div class="rubro-chip ${rubroSeleccionado === 'Todos' ? 'active' : ''}" onclick="seleccionarRubro('Todos', this)">Todos</div>`;
+            rubros.forEach(r => {
+                let activoClass = (rubroSeleccionado === r) ? 'active' : '';
+                html += `<div class="rubro-chip ${activoClass}" onclick="seleccionarRubro('${r}', this)">${r}</div>`;
+            });
+            contenedor.innerHTML = html;
         }
 
         // Cargar Avisos iniciales si el localStorage está vacío
@@ -473,7 +512,6 @@
 
             let html = '';
             filtrados.forEach(aviso => {
-                // Obtener calificación del empleador o creador para la card
                 const keyCalif = `califs_${aviso.empleador || 'James'}`;
                 let datosCalif = JSON.parse(localStorage.getItem(keyCalif)) || { promedio: 5.0, total: 1 };
                 let linkWa = `https://wa.me/${aviso.whatsapp}?text=Hola,%20vi%20tu%20aviso%20de%20${encodeURIComponent(aviso.titulo)}%20en%20Chamba%20Express%20y%20estoy%20interesado.`;
@@ -501,7 +539,8 @@
             contenedor.innerHTML = html;
         }
 
-        // Cargar al iniciar
+        // Ejecutar al iniciar
+        cargarRubrosDinamicos();
         renderizarAvisos();
     </script>
 </body>
