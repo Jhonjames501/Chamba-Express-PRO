@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajes - Chamba Express Lima</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding-bottom: 90px; }
+        .header {
+            background: linear-gradient(135deg, #00b064 0%, #00ff88 100%);
+            color: #000; padding: 20px;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        .chat-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .chat-card {
+            background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 16px;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .chat-card:hover { border-color: #00ff88; }
+        .chat-info h3 { font-size: 15px; color: #fff; margin-bottom: 4px; }
+        .chat-info p { font-size: 13px; color: #b6ff6e; }
+        .chat-time { font-size: 11px; color: #888; }
+        
+        /* Contenedor del Chat Activo */
+        .chat-box-container { display: none; margin-top: 10px; }
+        .messages-screen {
+            background: #1a1a1a; border: 1px solid #333; border-radius: 12px; height: 350px;
+            overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px;
+        }
+        .msg { max-width: 80%; padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.4; }
+        .msg.sent { background: #00ff88; color: #121212; align-self: flex-end; font-weight: 500; }
+        .msg.received { background: #2a2a2a; color: #fff; align-self: flex-start; border: 1px solid #444; }
+        .chat-input-area { display: flex; gap: 8px; }
+        .chat-input-area input {
+            flex: 1; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; outline: none;
+        }
+        .chat-input-area input:focus { border-color: #00ff88; }
+        .btn-send { background: #00ff88; color: #121212; border: none; padding: 0 16px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-back-chat { background: transparent; border: none; color: #00ff88; font-size: 14px; cursor: pointer; margin-bottom: 10px; font-weight: 600; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00ff88; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 style="font-size: 20px;">Bandeja de Mensajes</h1>
+        <p style="font-size: 12px; color: #121212; font-weight: 600;">Negociaciones y consultas directas</p>
+    </div>
+
+    <div class="container">
+        <!-- Lista de Chats -->
+        <div id="listaConversacionesView">
+            <div style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">Conversaciones Activas</div>
+            <div class="chat-list" id="chatListContainer">
+                <!-- Se llena por JS -->
+            </div>
+        </div>
+
+        <!-- Pantalla de Chat Individual (Oculta por defecto) -->
+        <div class="chat-box-container" id="chatBoxView">
+            <button class="btn-back-chat" onclick="cerrarChat()">← Volver a la lista</button>
+            <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #00ff88;" id="chatTitleHeader">Chat sobre Chamba</div>
+            <div class="messages-screen" id="messagesScreen">
+                <!-- Mensajes -->
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="inputMensaje" placeholder="Escribe un mensaje..." onkeypress="if(event.key === 'Enter') enviarMensaje()">
+                <button class="btn-send" onclick="enviarMensaje()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Buscar</a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Postulaciones</a>
+        <a href="mensajes.html" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>Mensajes</a>
+        <a href="perfil.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil</a>
+    </nav>
+
+    <script>
+        const usuarioActual = localStorage.getItem('nombre') || 'Usuario';
+        let chatIdActivo = null;
+
+        function cargarChats() {
+            let chats = JSON.parse(localStorage.getItem('chats')) || [];
+            const contenedor = document.getElementById('chatListContainer');
+
+            if(chats.length === 0) {
+                // Crear un chat de ejemplo inicial si está vacío para que se vea operativo de inmediato
+                chats = [{
+                    id: 1,
+                    empleador: "Sodimac Oficial",
+                    trabajador: usuarioActual,
+                    titulo: "Ayudante de almacén",
+                    mensajes: [
+                        { remitente: "Sodimac Oficial", texto: "Hola, vi tu perfil en Chamba Express. ¿Estás disponible mañana?" },
+                        { remitente: usuarioActual, texto: "¡Hola! Sí, claro, confirmen la hora por favor." }
+                    ]
+                }];
+                localStorage.setItem('chats', JSON.stringify(chats));
+            }
+
+            let html = '';
+            chats.forEach(chat => {
+                let ultimoMsg = chat.mensajes[chat.mensajes.length - 1] ? chat.mensajes[chat.mensajes.length - 1].texto : 'Sin mensajes';
+                html += `
+                    <div class="chat-card" onclick="abrirChat(${chat.id})">
+                        <div class="chat-info">
+                            <h3>💬 ${chat.empleador}</h3>
+                            <p style="font-size:12px; color:#fff;">Puesto: ${chat.titulo}</p>
+                            <p style="font-size:13px; color:#aaa; margin-top:4px;">${ultimoMsg}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            contenedor.innerHTML = html;
+        }
+
+        function abrirChat(id) {
+            chatIdActivo = id;
+            document.getElementById('listaConversacionesView').style.display = 'none';
+            document.getElementById('chatBoxView').style.display = 'block';
+            renderizarMensajes();
+        }
+
+        function cerrarChat() {
+            chatIdActivo = null;
+            document.getElementById('chatBoxView').style.display = 'none';
+            document.getElementById('listaConversacionesView').style.display = 'block';
+            cargarChats();
+        }
+
+        function renderizarMensajes() {
+            let chats = JSON.parse(localStorage.getItem('chats')) || [];
+            let chat = chats.find(c => c.id === chatIdActivo);
+            if(!chat) return;
+
+            document.getElementById('chatTitleHeader').innerText = `Chat con ${chat.empleador} (${chat.titulo})`;
+            const screen = document.getElementById('messagesScreen');
+
+            let html = '';
+            chat.mensajes.forEach(m => {
+                let tipo = m.remitente === usuarioActual ? 'sent' : 'received';
+                html += `<div class="msg ${tipo}"><b>${m.remitente}:</b><br>${m.texto}</div>`;
+            });
+            screen.innerHTML = html;
+            screen.scrollTop = screen.scrollHeight;
+        }
+
+        function enviarMensaje() {
+            const input = document.getElementById('inputMensaje');
+            const texto = input.value.trim();
+            if(!texto) return;
+
+            let chats = JSON.parse(localStorage.getItem('chats')) || [];
+            let chat = chats.find(c => c.id === chatIdActivo);
+            if(chat) {
+                chat.mensajes.push({ remitente: usuarioActual, texto: texto });
+                localStorage.setItem('chats', JSON.stringify(chats));
+                input.value = '';
+                renderizarMensajes();
+            }
+        }
+
+        cargarChats();
+    </script>
+</body>
+</html>
