@@ -3,73 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil - Chamba Express Lima</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Mi Perfil - Chamba Express</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: #121212; color: #ffffff; padding-bottom: 90px; }
         
         .header {
             background: linear-gradient(135deg, #00b064 0%, #00ff88 100%);
-            color: #000; padding: 20px;
+            color: #000; padding: 25px 20px;
             border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            text-align: center;
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .back-btn { background: rgba(0,0,0,0.15); border: none; color: #000; font-weight: 600; padding: 6px 12px; border-radius: 10px; text-decoration: none; font-size: 13px; cursor: pointer; }
-        
+        .avatar-box {
+            width: 80px; height: 80px; background: #000; color: #00ff88; font-size: 32px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 12px;
+            border: 3px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .header h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+        .header p { font-size: 13px; opacity: 0.8; font-weight: 600; }
+
         .container { padding: 20px; max-width: 600px; margin: 0 auto; }
-        
-        /* Tarjeta de Perfil */
-        .profile-card {
-            background: #1e1e1e; border: 1px solid #00ff88; border-radius: 16px; padding: 20px; text-align: center; margin-top: -10px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-        }
-        .avatar-container {
-            position: relative; width: 80px; height: 80px; margin: 0 auto 12px auto;
-        }
-        .avatar-img {
-            width: 80px; height: 80px; background: #00ff88; color: #121212; font-size: 32px; font-weight: 700;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; object-fit: cover;
-            border: 2px solid #00ff88; box-shadow: 0 0 15px rgba(0,255,136,0.4);
-        }
-        .upload-badge {
-            position: absolute; bottom: 0; right: 0; background: #00ff88; color: #121212; border-radius: 50%;
-            width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; border: 2px solid #1e1e1e;
-        }
-        .profile-name { font-size: 18px; font-weight: 700; margin-bottom: 2px; color: #fff; }
-        .profile-district { font-size: 13px; color: #b6ff6e; margin-bottom: 12px; }
-        
-        .rating-box {
-            background: #2a2a2a; border-radius: 10px; padding: 10px; display: flex; justify-content: center; align-items: center; gap: 8px; border: 1px solid #333; margin-bottom: 16px;
-        }
-        .rating-stars { color: #ffd700; font-size: 16px; }
-        .rating-score { font-size: 16px; font-weight: 700; color: #fff; }
-        .rating-total { font-size: 12px; color: #888; }
 
-        /* Formulario de Edición */
-        .edit-form-box {
-            background: #181818; border: 1px solid #333; border-radius: 12px; padding: 16px; margin-top: 20px; text-align: left;
+        .card {
+            background: #181818; border: 1px solid #333; border-radius: 16px; padding: 20px; margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
-        .edit-form-box h3 { font-size: 14px; color: #00ff88; margin-bottom: 12px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 11px; color: #b6ff6e; margin-bottom: 4px; text-transform: uppercase; }
-        .form-control {
-            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-size: 13px; outline: none;
+        .card h3 { font-size: 15px; font-weight: 700; color: #00ff88; margin-bottom: 12px; }
+
+        .menu-link {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #1a1a1a; border: 1px solid #333; padding: 14px; border-radius: 12px;
+            text-decoration: none; color: #fff; margin-bottom: 10px; transition: 0.2s;
         }
-        .form-control:focus { border-color: #00ff88; }
-        .btn-save {
-            background: #00ff88; color: #121212; font-weight: 700; border: none; width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px;
+        .menu-link:active { background: #222; }
+
+        .btn-logout {
+            background: #ff4d4d; color: #fff; font-weight: 800; border: none; width: 100%; padding: 14px;
+            border-radius: 12px; font-size: 14px; cursor: pointer; text-align: center; margin-top: 10px;
         }
 
-        /* Comentarios */
-        .section-title { font-size: 15px; font-weight: 700; margin: 20px 0 10px 0; color: #fff; }
-        .comments-list { display: flex; flex-direction: column; gap: 10px; }
-        .comment-card { background: #1a1a1a; border: 1px solid #333; border-left: 3px solid #00ff88; border-radius: 10px; padding: 12px; }
-        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .comment-author { font-size: 13px; font-weight: 600; color: #b6ff6e; }
-        .comment-stars { font-size: 12px; color: #ffd700; }
-        .comment-text { font-size: 13px; color: #ccc; }
-
-        /* Navegación Inferior */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
         .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: #00ff88; }
@@ -79,54 +52,61 @@
 <body>
 
     <div class="header">
-        <div class="header-top">
-            <a href="index.html" class="back-btn">← Volver</a>
-            <span style="font-size: 12px; font-weight: 600;">⭐ Panel de Usuario</span>
-        </div>
-        <h1 style="font-size: 18px;">Mi Perfil</h1>
+        <div class="avatar-box" id="avatarLetra">U</div>
+        <h2 id="nombreUsuario">Cargando...</h2>
+        <p id="rolUsuario">Trabajador / Empleador</p>
     </div>
 
-    <div class="container">
-        <!-- Tarjeta Perfil -->
-        <div class="profile-card">
-            <div class="avatar-container">
-                <div id="avatarDisplay" class="avatar-img">J</div>
-                <label for="inputFoto" class="upload-badge" title="Cambiar foto">📷</label>
-                <input type="file" id="inputFoto" accept="image/*" style="display: none;" onchange="cambiarFoto(event)">
+    <div class="container" style="margin-top: 10px;">
+        
+        <!-- DATOS DE CUENTA -->
+        <div class="card">
+            <h3>📋 Información de Contacto</h3>
+            <div style="font-size: 13px; color: #bbb; display: flex; flex-direction: column; gap: 8px;">
+                <div><strong>📱 Celular:</strong> <span id="telUsuario">-</span></div>
+                <div><strong>📍 Distrito:</strong> <span id="distritoUsuario">-</span></div>
             </div>
-            <div class="profile-name" id="userName">Cargando...</div>
-            <div class="profile-district" id="userDistrict">📍 Lima, Perú</div>
+        </div>
 
-            <div class="rating-box" id="ratingBoxContainer">
-                <div class="rating-stars" id="profileStars">⭐⭐⭐⭐⭐</div>
+        <!-- ACCESO AL PANEL DE ADMIN (Solo si es Jhon) -->
+        <div id="seccionAdmin" style="display: none;">
+            <a href="admin.html" class="menu-link" style="border: 2px solid #00ff88; background: #15291f;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 18px;">👑</span>
+                    <div>
+                        <h4 style="font-size: 14px; font-weight: 700; color: #00ff88;">Panel de Administrador Master</h4>
+                        <p style="font-size: 11px; color: #888;">Control total de la app y editor en vivo</p>
+                    </div>
+                </div>
+                <span style="color: #00ff88; font-weight: bold;">›</span>
+            </a>
+        </div>
+
+        <!-- CENTRO DE RECLAMOS Y SOPORTE (NUEVO) -->
+        <a href="reclamos.html" class="menu-link" style="border: 1px solid #ff4d4d33;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 18px;">🛡️</span>
                 <div>
-                    <div class="rating-score"><span id="profileAvg">5.0</span> <span class="rating-total" id="profileCount">(1)</span></div>
+                    <h4 style="font-size: 14px; font-weight: 700; color: #ff4d4d;">Centro de Reclamos y Soporte</h4>
+                    <p style="font-size: 11px; color: #888;">Reporta problemas, estafas o malos tratos</p>
                 </div>
             </div>
+            <span style="color: #888; font-weight: bold;">›</span>
+        </a>
 
-            <!-- Formulario de Edición de Datos -->
-            <div class="edit-form-box">
-                <h3>Editar mi información</h3>
-                <div class="form-group">
-                    <label>Nombre Completo</label>
-                    <input type="text" id="editNombre" class="form-control">
+        <!-- OTRAS OPCIONES -->
+        <div class="card">
+            <h3>⚙️ Opciones de Cuenta</h3>
+            <a href="index.html" class="menu-link" style="margin-bottom: 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span>🏠</span>
+                    <span style="font-size: 13px; font-weight: 600;">Volver al Inicio</span>
                 </div>
-                <div class="form-group">
-                    <label>WhatsApp</label>
-                    <input type="tel" id="editWhatsapp" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Distrito</label>
-                    <input type="text" id="editDistrito" class="form-control">
-                </div>
-                <button type="button" class="btn-save" onclick="guardarCambiosPerfil()">Guardar Cambios</button>
-            </div>
+                <span style="color: #888;">›</span>
+            </a>
         </div>
 
-        <div class="section-title">Historial de Calificaciones</div>
-        <div class="comments-list" id="commentsList">
-            <!-- Se llena por JS -->
-        </div>
+        <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
 
     <!-- Navegación -->
@@ -138,100 +118,28 @@
     </nav>
 
     <script>
-        let nombreActual = localStorage.getItem('nombre') || 'Usuario';
-        let rolActual = localStorage.getItem('rol') || 'trabajador';
+        const nombre = localStorage.getItem('nombre') || 'Usuario';
+        const telefono = localStorage.getItem('telefono') || 'No registrado';
+        const distrito = localStorage.getItem('distrito') || 'Lima';
+        const rol = localStorage.getItem('rol') || 'Usuario General';
 
-        function cargarDatosPerfil() {
-            document.getElementById('userName').innerText = nombreActual;
-            document.getElementById('userDistrict').innerText = `📍 ${localStorage.getItem('distrito') || 'Lima'}, Lima`;
-            
-            // Cargar inputs del formulario
-            document.getElementById('editNombre').value = nombreActual;
-            document.getElementById('editWhatsapp').value = localStorage.getItem('whatsapp') || '';
-            document.getElementById('editDistrito').value = localStorage.getItem('distrito') || '';
+        document.getElementById('nombreUsuario').innerText = nombre;
+        document.getElementById('telUsuario').innerText = telefono;
+        document.getElementById('distritoUsuario').innerText = distrito;
+        document.getElementById('rolUsuario').innerText = rol;
+        document.getElementById('avatarLetra').innerText = nombre.charAt(0).toUpperCase();
 
-            // Cargar Avatar o foto guardada en base64
-            const avatarContainer = document.getElementById('avatarDisplay');
-            const fotoGuardada = localStorage.getItem(`foto_${nombreActual}`);
-            if(fotoGuardada) {
-                avatarContainer.innerHTML = `<img src="${fotoGuardada}" class="avatar-img" alt="Foto">`;
-            } else {
-                avatarContainer.innerHTML = nombreActual.charAt(0).toUpperCase();
-            }
-
-            // Si es empleador, ocultar caja de estrellas de trabajador
-            if(rolActual === 'empleador') {
-                document.getElementById('ratingBoxContainer').style.display = 'none';
-                document.getElementById('commentsList').innerHTML = `<p style="color:#888; text-align:center; font-size:13px;">Los empleadores no reciben calificaciones de comportamiento.</p>`;
-                return;
-            }
-
-            // Cargar Calificaciones de trabajador
-            const keyCalif = `califs_${nombreActual}`;
-            let datosCalif = JSON.parse(localStorage.getItem(keyCalif)) || { promedio: 5.0, total: 1, comentarios: [{ autor: "Sistema", estrellas: 5, texto: "¡Bienvenido a Chamba Express!" }] };
-
-            document.getElementById('profileAvg').innerText = Number(datosCalif.promedio).toFixed(1);
-            document.getElementById('profileCount').innerText = `(${datosCalif.total})`;
-
-            let htmlComentarios = '';
-            datosCalif.comentarios.forEach(c => {
-                htmlComentarios += `
-                    <div class="comment-card">
-                        <div class="comment-header">
-                            <span class="comment-author">🏢 ${c.autor}</span>
-                            <span class="comment-stars">${'⭐'.repeat(c.estrellas)}</span>
-                        </div>
-                        <div class="comment-text">"${c.texto}"</div>
-                    </div>
-                `;
-            });
-            document.getElementById('commentsList').innerHTML = htmlComentarios;
+        // Mostrar enlace de admin si el usuario es Jhon
+        if(nombre.toLowerCase() === 'jhon') {
+            document.getElementById('seccionAdmin').style.display = 'block';
         }
 
-        function cambiarFoto(event) {
-            const archivo = event.target.files[0];
-            if(!archivo) return;
-
-            const lector = new FileReader();
-            lector.onload = function(e) {
-                const base64Image = e.target.result;
-                localStorage.setItem(`foto_${nombreActual}`, base64Image);
-                cargarDatosPerfil();
-                alert('¡Foto de perfil actualizada con éxito!');
-            };
-            lector.readAsDataURL(archivo);
-        }
-
-        function guardarCambiosPerfil() {
-            const nuevoNombre = document.getElementById('editNombre').value.trim();
-            const nuevoWp = document.getElementById('editWhatsapp').value.trim();
-            const nuevoDistrito = document.getElementById('editDistrito').value.trim();
-
-            if(!nuevoNombre || !nuevoWp || !nuevoDistrito) {
-                alert('⚠️ Todos los campos son obligatorios.');
-                return;
+        function cerrarSesion() {
+            if(confirm('¿Seguro que deseas cerrar sesión?')) {
+                localStorage.removeItem('nombre');
+                location.href = 'index.html';
             }
-
-            // Actualizar localStorage principal
-            localStorage.setItem('nombre', nuevoNombre);
-            localStorage.setItem('whatsapp', nuevoWp);
-            localStorage.setItem('distrito', nuevoDistrito);
-
-            // Si cambió el nombre, migrar calificaciones o datos clave si existían
-            if(nuevoNombre !== nombreActual) {
-                const califsAntiguas = localStorage.getItem(`califs_${nombreActual}`);
-                if(califsAntiguas) {
-                    localStorage.setItem(`califs_${nuevoNombre}`, califsAntiguas);
-                    localStorage.removeItem(`califs_${nombreActual}`);
-                }
-            }
-
-            nombreActual = nuevoNombre;
-            alert('¡Información de perfil actualizada correctamente!');
-            cargarDatosPerfil();
         }
-
-        cargarDatosPerfil();
     </script>
 </body>
 </html>
