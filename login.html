@@ -1,32 +1,352 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Chamba Express</title>
-<style>
-*{font-family:Arial;box-sizing:border-box}body{background:#0f0f0f;color:white;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.card{background:#1e1e1e;padding:30px;border-radius:25px;width:100%;max-width:400px;border:1px solid #333;text-align:center}
-.rol{padding:18px;border:2px solid #333;border-radius:15px;margin:10px 0;cursor:pointer;background:#0f0f0f;text-align:left;display:flex;gap:12px;align-items:center}
-.rol.active{border-color:#00ff88;background:#00ff881a}
-.btn{background:#00ff88;color:black;border:none;padding:16px;width:100%;border-radius:15px;font-weight:800;margin-top:20px;font-size:16px}
-input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#0f0f0f;color:white;margin-top:10px}
-</style></head><body>
-<div class="card">
-<h1 style="font-size:30px;line-height:1">💼 Chamba<br>Express</h1>
-<p style="color:#888;margin:10px 0">Bienvenido - Elige cómo entras</p>
-<input id="nombre" placeholder="Tu nombre completo *">
-<input id="whatsapp" placeholder="Tu WhatsApp 9XXXXXXXX *">
-<input id="distrito" placeholder="Distrito Ej: SJL">
-<div class="rol" id="rolTrab" onclick="elegir('trabajador')"><div style="font-size:28px">🙋‍♂️</div><div><h3 style="margin:0">Soy Trabajador</h3><small style="color:#aaa">Busco chambas y me califican por mi comportamiento</small></div></div>
-<div class="rol" id="rolEmp" onclick="elegir('empleador')"><div style="font-size:28px">🏢</div><div><h3 style="margin:0">Soy Empleador</h3><small style="color:#aaa">Publico chambas y califico trabajadores</small></div></div>
-<button class="btn" onclick="entrar()">ENTRAR AHORA →</button>
-<p style="color:#555;font-size:11px;margin-top:15px">Se guarda en tu celular y podrás cambiar de rol después</p>
-</div>
-<script>
-let rolElegido='';
-function elegir(r){rolElegido=r;document.querySelectorAll('.rol').forEach(x=>x.classList.remove('active'));document.getElementById(r=='trabajador'?'rolTrab':'rolEmp').classList.add('active');}
-function entrar(){
- if(!nombre.value||!whatsapp.value||!rolElegido){alert('Completa nombre, WhatsApp y elige rol');return;}
- localStorage.setItem('nombre',nombre.value);localStorage.setItem('whatsapp',whatsapp.value);localStorage.setItem('distrito',distrito.value);localStorage.setItem('rol',rolElegido);
- if(rolElegido=='trabajador' && !localStorage.getItem('califs_'+nombre.value)){localStorage.setItem('califs_'+nombre.value, JSON.stringify([{estrellas:'5',empleador:'Chamba Express',texto:'Bienvenido, cuida tu calificación'}]));}
- location.href='index.html';
-}
-</script></body></html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Chamba Express Lima</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 10%, rgba(0, 255, 136, 0.08) 0%, transparent 60%);
+        }
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 24px;
+            padding: 30px 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #00b064, #00ff88, #b6ff6e);
+        }
+        .brand-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .brand-logo {
+            width: 54px; height: 54px;
+            background: linear-gradient(135deg, #00b064, #00ff88);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px auto;
+            font-size: 26px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        .brand-header h1 {
+            font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px;
+        }
+        .brand-header p {
+            font-size: 13px; color: #888; margin-top: 4px;
+        }
+
+        /* Pestañas de modo (Registrarse / Iniciar Sesión) */
+        .tab-toggle {
+            display: flex;
+            background: #121212;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #2a2a2a;
+        }
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: #222;
+            color: #00ff88;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block; font-size: 12px; font-weight: 600; color: #b6ff6e; margin-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .input-box {
+            width: 100%;
+            background: #121212;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-box:focus {
+            border-color: #00ff88;
+        }
+
+        /* Selección de Roles Estilizada */
+        .roles-label {
+            font-size: 12px; font-weight: 600; color: #b6ff6e; margin-bottom: 8px;
+            text-transform: uppercase; letter-spacing: 0.5px; display: block;
+        }
+        .roles-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .role-card {
+            background: #121212;
+            border: 2px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .role-card input[type="radio"] {
+            display: none;
+        }
+        .role-card.selected {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+        .role-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .role-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .role-desc {
+            font-size: 10px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #00b064, #00ff88);
+            color: #121212;
+            font-weight: 800;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.25);
+            transition: transform 0.1s;
+        }
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="brand-header">
+            <div class="brand-logo">💼</div>
+            <h1>Chamba Express</h1>
+            <p>El portal de empleos diarios en Lima</p>
+        </div>
+
+        <!-- Pestañas -->
+        <div class="tab-toggle">
+            <button type="button" class="tab-btn active" id="btnTabRegistro" onclick="cambiarModo('registro')">Registrarse</button>
+            <button type="button" class="tab-btn" id="btnTabLogin" onclick="cambiarModo('login')">Iniciar Sesión</button>
+        </div>
+
+        <!-- Formulario -->
+        <form id="authForm" onsubmit="procesarAcceso(event)">
+            
+            <div class="form-group">
+                <label>Usuario o Correo</label>
+                <input type="text" id="username" class="input-box" placeholder="Ej: jhon_lima" required>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="password" class="input-box" placeholder="••••••••" required>
+            </div>
+
+            <!-- Campos adicionales solo para Registro -->
+            <div id="camposRegistro">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="nombreCompleto" class="input-box" placeholder="Ej: Jhon Espinoza">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp de Contacto</label>
+                    <input type="tel" id="whatsapp" class="input-box" placeholder="912345678">
+                </div>
+                <div class="form-group">
+                    <label>Distrito en Lima</label>
+                    <input type="text" id="distrito" class="input-box" placeholder="Ej: Carabayllo">
+                </div>
+
+                <span class="roles-label">Selecciona tu Rol</span>
+                <div class="roles-grid">
+                    <label class="role-card selected" id="cardTrabajador" onclick="seleccionarRol('trabajador')">
+                        <input type="radio" name="rol" value="trabajador" checked>
+                        <div class="role-icon">🙋‍♂️</div>
+                        <div class="role-title">Trabajador</div>
+                        <div class="role-desc">Busco chamba</div>
+                    </label>
+                    <label class="role-card" id="cardEmpleador" onclick="seleccionarRol('empleador')">
+                        <input type="radio" name="rol" value="empleador">
+                        <div class="role-icon">🏢</div>
+                        <div class="role-title">Empleador</div>
+                        <div class="role-desc">Publico chambas</div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtnText">CREAR CUENTA</button>
+        </form>
+
+        <div class="footer-note">Seguridad local mediante LocalStorage • Lima, Perú</div>
+    </div>
+
+    <script>
+        let modoActual = 'registro'; // 'registro' o 'login'
+
+        function cambiarModo(modo) {
+            modoActual = modo;
+            const camposReg = document.getElementById('camposRegistro');
+            const btnReg = document.getElementById('btnTabRegistro');
+            const btnLog = document.getElementById('btnTabLogin');
+            const submitBtn = document.getElementById('submitBtnText');
+
+            if(modo === 'registro') {
+                btnReg.classList.add('active');
+                btnLog.classList.remove('active');
+                camposReg.style.display = 'block';
+                submitBtn.innerText = 'CREAR CUENTA';
+                document.getElementById('username').required = true;
+                document.getElementById('password').required = true;
+                document.getElementById('nombreCompleto').required = true;
+                document.getElementById('whatsapp').required = true;
+                document.getElementById('distrito').required = true;
+            } else {
+                btnLog.classList.add('active');
+                btnReg.classList.remove('active');
+                camposReg.style.display = 'none';
+                submitBtn.innerText = 'INGRESAR A LA APP';
+                document.getElementById('nombreCompleto').required = false;
+                document.getElementById('whatsapp').required = false;
+                document.getElementById('distrito').required = false;
+            }
+        }
+
+        function seleccionarRol(rol) {
+            const cardT = document.getElementById('cardTrabajador');
+            const cardE = document.getElementById('cardEmpleador');
+            
+            if(rol === 'trabajador') {
+                cardT.classList.add('selected');
+                cardE.classList.remove('selected');
+                cardT.querySelector('input').checked = true;
+            } else {
+                cardE.classList.add('selected');
+                cardT.classList.remove('selected');
+                cardE.querySelector('input').checked = true;
+            }
+        }
+
+        function procesarAcceso(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+
+            let usuariosRegistrados = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+
+            if(modoActual === 'registro') {
+                // Verificar si ya existe el usuario
+                if(usuariosRegistrados.some(u => u.username === user)) {
+                    alert('⚠️ Este usuario ya existe. Elige otro o inicia sesión.');
+                    return;
+                }
+
+                const nombre = document.getElementById('nombreCompleto').value.trim();
+                const whatsapp = document.getElementById('whatsapp').value.trim();
+                const distrito = document.getElementById('distrito').value.trim();
+                const rol = document.querySelector('input[name="rol"]:checked').value;
+
+                const nuevoUsuario = { username: user, password: pass, nombre, whatsapp, distrito, rol };
+                usuariosRegistrados.push(nuevoUsuario);
+                localStorage.setItem('usuarios_db', JSON.stringify(usuariosRegistrados));
+
+                // Guardar sesión activa actual
+                localStorage.setItem('usuario_activo', user);
+                localStorage.setItem('nombre', nombre);
+                localStorage.setItem('whatsapp', whatsapp);
+                localStorage.setItem('distrito', distrito);
+                localStorage.setItem('rol', rol);
+
+                // Si es trabajador, inicializar su calificación si no existe
+                if(rol === 'trabajador' && !localStorage.getItem(`califs_${nombre}`)) {
+                    const datosCalif = {
+                        promedio: 5.0,
+                        total: 1,
+                        comentarios: [
+                            { autor: "Sistema Chamba Express", estrellas: 5, texto: "¡Cuenta creada con éxito! Bienvenido a la plataforma." }
+                        ]
+                    };
+                    localStorage.setItem(`califs_${nombre}`, JSON.stringify(datosCalif));
+                }
+
+                alert('¡Cuenta creada con éxito! Bienvenido a Chamba Express.');
+                location.href = 'index.html';
+
+            } else {
+                // Modo Login
+                const encontrado = usuariosRegistrados.find(u => u.username === user && u.password === pass);
+                
+                if(!encontrado) {
+                    alert('❌ Usuario o contraseña incorrectos. Verifica tus datos o regístrate.');
+                    return;
+                }
+
+                // Cargar datos a la sesión activa
+                localStorage.setItem('usuario_activo', encontrado.username);
+                localStorage.setItem('nombre', encontrado.nombre);
+                localStorage.setItem('whatsapp', encontrado.whatsapp);
+                localStorage.setItem('distrito', encontrado.distrito);
+                localStorage.setItem('rol', encontrado.rol);
+
+                alert(`¡Bienvenido de nuevo, ${encontrado.nombre}!`);
+                location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
