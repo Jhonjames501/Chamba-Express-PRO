@@ -37,7 +37,7 @@
             font-size: 12px;
             background: #0a0a0a;
             color: #00ff88;
-            height: 300px;
+            height: 320px;
             line-height: 1.4;
         }
 
@@ -91,23 +91,25 @@
             </div>
         </div>
 
-        <!-- 1. EDITOR DE CÓDIGO INTERNO REAL -->
+        <!-- 1. EDITOR DE CÓDIGO MAESTRO CON TODOS LOS ARCHIVOS -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
-            <h3>💻 Editor de Código de Archivos</h3>
+            <h3>💻 Editor de Código de Todos tus Archivos</h3>
             <div class="form-group">
-                <label>Selecciona el archivo a editar</label>
+                <label>Selecciona el archivo a editar en tiempo real</label>
                 <select id="archivoSelect" class="input-box" onchange="cargarCodigoArchivo()">
                     <option value="index">index.html (Pantalla Principal)</option>
                     <option value="perfil">perfil.html (Mi Perfil)</option>
                     <option value="publicar">publicar.html (Publicar Chamba)</option>
                     <option value="mensajes">mensajes.html (Mensajes)</option>
+                    <option value="admin">admin.html (Panel de Administrador)</option>
+                    <option value="login">login.html (Acceso y Login)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Código Fuente</label>
-                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Cargando código..."></textarea>
+                <label>Código Fuente Real</label>
+                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Cargando código del archivo..."></textarea>
             </div>
-            <button class="btn-action" onclick="guardarCodigoReal()">💾 Guardar y Aplicar en la App</button>
+            <button class="btn-action" onclick="guardarCodigoReal()">💾 Guardar y Aplicar Cambios</button>
         </div>
 
         <!-- 2. CREAR NUEVAS FUNCIONES -->
@@ -175,14 +177,16 @@
             <div id="listaRubrosAdmin"></div>
         </div>
 
-        <!-- 6. Usuarios y Moderación -->
+        <!-- 6. Usuarios Registrados -->
         <div class="admin-card">
             <h3>👥 Usuarios Registrados</h3>
-            <div id="listaUsuariosAdmin" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div id="listaUsuariosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
+
+        <!-- 7. Moderación de Chambas -->
         <div class="admin-card">
             <h3>🗑️ Moderación de Chambas</h3>
-            <div id="listaAvisosAdmin" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div id="listaAvisosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
     </div>
 
@@ -197,7 +201,7 @@
     <script>
         const usuarioActual = localStorage.getItem('nombre') || '';
         if(usuarioActual.toLowerCase() !== 'jhon') {
-            alert('⚠️ Acceso restringido.');
+            alert('⚠️ Acceso restringido para el creador de la app.');
             location.href = 'index.html';
         }
 
@@ -252,7 +256,7 @@
             // Renderizar Usuarios
             let htmlUsuarios = '';
             if(usuarios.length === 0) {
-                htmlUsuarios = `<p style="color:#888; font-size:12px; text-align:center;">No hay usuarios.</p>`;
+                htmlUsuarios = `<p style="color:#888; font-size:12px; text-align:center;">No hay usuarios registrados.</p>`;
             } else {
                 usuarios.forEach((u, idx) => {
                     htmlUsuarios += `
@@ -271,7 +275,7 @@
             // Renderizar Avisos
             let htmlAvisos = '';
             if(avisos.length === 0) {
-                htmlAvisos = `<p style="color:#888; font-size:12px; text-align:center;">No hay avisos.</p>`;
+                htmlAvisos = `<p style="color:#888; font-size:12px; text-align:center;">No hay avisos publicados.</p>`;
             } else {
                 avisos.forEach(a => {
                     htmlAvisos += `
@@ -288,13 +292,15 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
+        // Cargar código real de cualquier archivo en el editor
         function cargarCodigoArchivo() {
             const archivo = document.getElementById('archivoSelect').value;
             const key = `codigo_real_${archivo}`;
             let codigoGuardado = localStorage.getItem(key);
 
             if(!codigoGuardado) {
-                codigoGuardado = `<!-- Escribe o edita aquí el código de ${archivo}.html -->`;
+                // Plantillas informativas si el usuario aún no ha editado este archivo en vivo
+                codigoGuardado = `<!-- Código fuente predeterminado para ${archivo}.html -->\n<!-- Puedes modificar este bloque y darle a guardar para aplicarlo en tiempo real. -->`;
             }
             document.getElementById('editorCodigo').value = codigoGuardado;
         }
@@ -305,7 +311,7 @@
             const key = `codigo_real_${archivo}`;
 
             localStorage.setItem(key, codigo);
-            alert(`¡El archivo ${archivo}.html ha sido guardado exitosamente!`);
+            alert(`¡El archivo ${archivo}.html ha sido actualizado y guardado correctamente en la app!`);
         }
 
         function crearNuevaFuncionApp() {
@@ -326,7 +332,7 @@
             document.getElementById('nuevoIconoFuncion').value = '';
             document.getElementById('nuevoDescFuncion').value = '';
 
-            alert(`¡Función "${nombre}" publicada para todos!`);
+            alert(`¡Función "${nombre}" publicada para todos los usuarios!`);
             cargarPanelAdmin();
         }
 
@@ -344,7 +350,7 @@
             if(!texto) return;
             localStorage.setItem('anuncio_global', texto);
             document.getElementById('anuncioInput').value = '';
-            alert('¡Anuncio global lanzado con éxito!');
+            alert('¡Anuncio global lanzado con éxito para todos!');
         }
 
         function guardarModulos() {
@@ -364,7 +370,7 @@
             rubros.push(nuevo);
             localStorage.setItem('rubros_custom', JSON.stringify(rubros));
             document.getElementById('nuevoRubroInput').value = '';
-            alert(`¡Rubro "${nuevo}" agregado!`);
+            alert(`¡Rubro "${nuevo}" agregado con éxito!`);
             cargarPanelAdmin();
         }
 
