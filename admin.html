@@ -32,13 +32,38 @@
         }
         .input-box:focus, textarea:focus, select:focus { border-color: #00ff88; }
         
+        /* EDITOR ESTILO GITHUB CON LÍNEAS NUMERADAS */
+        .editor-wrapper {
+            display: flex;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .line-numbers {
+            background: #111;
+            color: #555;
+            padding: 12px 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            text-align: right;
+            user-select: none;
+            line-height: 1.4;
+            min-width: 35px;
+            border-right: 1px solid #222;
+        }
         .code-editor {
             font-family: 'Courier New', Courier, monospace;
             font-size: 12px;
-            background: #0a0a0a;
+            background: transparent;
             color: #00ff88;
             height: 320px;
             line-height: 1.4;
+            border: none;
+            resize: vertical;
+            padding-left: 10px;
+            white-space: pre;
+            overflow-x: auto;
         }
 
         .btn-action {
@@ -75,7 +100,7 @@
     </div>
 
     <div class="container" style="margin-top: 20px;">
-        <!-- Estadísticas del Sistema -->
+        <!-- Estadísticas -->
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-num" id="statAvisos">0</div>
@@ -91,7 +116,7 @@
             </div>
         </div>
 
-        <!-- 1. CREAR UN NUEVO ARCHIVO DIRECTO EN GITHUB -->
+        <!-- 1. CREAR NUEVO ARCHIVO -->
         <div class="admin-card" style="border: 2px dashed #00ff88;">
             <h3>📄 Crear un Nuevo Archivo en la App</h3>
             <div class="form-group">
@@ -100,43 +125,46 @@
             </div>
             <div class="form-group">
                 <label>Código Inicial del Archivo</label>
-                <textarea id="nuevoCodigoArchivo" rows="4" class="input-box" placeholder="<!DOCTYPE html><html>...</html>"></textarea>
+                <textarea id="nuevoCodigoArchivo" rows="3" class="input-box" placeholder="<!DOCTYPE html><html>...</html>"></textarea>
             </div>
             <button class="btn-action" onclick="crearNuevoArchivoGitHub()">✨ Crear Archivo en GitHub</button>
         </div>
 
-        <!-- 2. EDITOR DE CÓDIGO MAESTRO -->
+        <!-- 2. EDITOR DE CÓDIGO CON LÍNEAS NUMERADAS -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
-            <h3>💻 Editor de Código (Conexión Directa a GitHub)</h3>
+            <h3>💻 Editor de Código (Estilo GitHub)</h3>
             <div class="form-group">
                 <label>Selecciona el archivo a editar</label>
                 <select id="archivoSelect" class="input-box" onchange="cargarCodigoGitHub()">
-                    <!-- Se llena dinámicamente con todos tus archivos HTML -->
+                    <!-- Se llena automáticamente con todos tus archivos -->
                 </select>
             </div>
             <div class="form-group">
-                <label>Código Fuente Real en GitHub</label>
-                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Selecciona un archivo para cargar su código..."></textarea>
+                <label>Código Fuente con Líneas Enumeradas</label>
+                <div class="editor-wrapper">
+                    <div id="lineNumbers" class="line-numbers">1</div>
+                    <textarea id="editorCodigo" class="input-box code-editor" oninput="actualizarLineas()" onscroll="sincronizarScroll()" placeholder="Selecciona un archivo..."></textarea>
+                </div>
             </div>
             <button class="btn-action" onclick="guardarEnGitHubDirecto()">🚀 Guardar y Subir a GitHub en Vivo</button>
         </div>
 
-        <!-- 3. CONFIGURACIÓN DE MÉTODOS DE PAGO -->
+        <!-- 3. MÉTODOS DE PAGO -->
         <div class="admin-card">
             <h3>💳 Configuración de Métodos de Pago</h3>
             <div class="form-group">
                 <label>Nombre del Método</label>
-                <input type="text" id="nombrePagoInput" class="input-box" placeholder="Ej: Yape / Plin Chamba Express">
+                <input type="text" id="nombrePagoInput" class="input-box" placeholder="Ej: Yape / Plin">
             </div>
             <div class="form-group">
-                <label>Número o Cuenta de Referencia</label>
+                <label>Número o Cuenta</label>
                 <input type="text" id="cuentaPagoInput" class="input-box" placeholder="Ej: 912345678">
             </div>
             <button class="btn-action" onclick="agregarMetodoPagoMaster()">+ Agregar Método de Pago</button>
             <div id="listaPagosAdmin" style="margin-top: 15px;"></div>
         </div>
 
-        <!-- 4. CREAR NUEVAS FUNCIONES -->
+        <!-- 4. FUNCIONES GLOBALES -->
         <div class="admin-card">
             <h3>🚀 Agregar Nueva Función Global</h3>
             <div class="form-group">
@@ -163,24 +191,24 @@
             <h3>📢 Publicar Anuncio Global</h3>
             <div class="form-group">
                 <label>Mensaje para todos los usuarios</label>
-                <textarea id="anuncioInput" rows="2" placeholder="Ej: ¡Aviso importante en la app!"></textarea>
+                <textarea id="anuncioInput" rows="2" placeholder="Ej: ¡Aviso importante!"></textarea>
             </div>
             <button class="btn-action" onclick="publicarAnuncioMaster()">Enviar Anuncio</button>
         </div>
 
-        <!-- 6. MÓDULOS DEL SISTEMA -->
+        <!-- 6. MÓDULOS -->
         <div class="admin-card">
             <h3>⚡ Módulos del Sistema</h3>
             <div class="toggle-row">
-                <span>💬 Activar Módulo de Chat</span>
+                <span>💬 Activar Chat</span>
                 <input type="checkbox" id="modChat" checked onchange="guardarModulos()">
             </div>
             <div class="toggle-row">
-                <span>⭐ Sistema de Calificaciones</span>
+                <span>⭐ Calificaciones</span>
                 <input type="checkbox" id="modCalif" checked onchange="guardarModulos()">
             </div>
             <div class="toggle-row">
-                <span>🚨 Permitir Avisos URGENTES</span>
+                <span>🚨 Avisos URGENTES</span>
                 <input type="checkbox" id="modUrgente" checked onchange="guardarModulos()">
             </div>
         </div>
@@ -199,20 +227,19 @@
             <div id="listaRubrosAdmin"></div>
         </div>
 
-        <!-- 8. USUARIOS REGISTRADOS -->
+        <!-- 8. USUARIOS -->
         <div class="admin-card">
             <h3>👥 Usuarios Registrados</h3>
             <div id="listaUsuariosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
 
-        <!-- 9. MODERACIÓN DE CHAMBAS -->
+        <!-- 9. MODERACIÓN -->
         <div class="admin-card">
             <h3>🗑️ Moderación de Chambas</h3>
             <div id="listaAvisosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
     </div>
 
-    <!-- Navegación -->
     <nav class="nav-bar">
         <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Buscar</a>
         <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Postulaciones</a>
@@ -223,7 +250,7 @@
     <script>
         const usuarioActual = localStorage.getItem('nombre') || '';
         if(usuarioActual.toLowerCase() !== 'jhon') {
-            alert('⚠️ Acceso restringido para el creador de la app.');
+            alert('⚠️ Acceso restringido.');
             location.href = 'index.html';
         }
 
@@ -232,15 +259,11 @@
 
         async function cargarPanelAdmin() {
             await listarArchivosGitHub();
-
             let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
             let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
             let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
             let funcionesCustom = JSON.parse(localStorage.getItem('funciones_custom')) || [];
-            let metodosPago = JSON.parse(localStorage.getItem('pagos_custom')) || [
-                { nombre: "Yape / Plin Oficial", cuenta: "912345678" },
-                { nombre: "Efectivo Diario", cuenta: "Pago directo en obra" }
-            ];
+            let metodosPago = JSON.parse(localStorage.getItem('pagos_custom')) || [{ nombre: "Yape / Plin", cuenta: "912345678" }];
             
             document.getElementById('statAvisos').innerText = avisos.length;
             document.getElementById('statUsuarios').innerText = usuarios.length;
@@ -253,15 +276,7 @@
 
             let htmlPagos = '';
             metodosPago.forEach((p, idx) => {
-                htmlPagos += `
-                    <div class="item-row">
-                        <div class="item-info">
-                            <h4>💳 ${p.nombre}</h4>
-                            <p>${p.cuenta}</p>
-                        </div>
-                        <button class="btn-del-mini" onclick="eliminarMetodoPago(${idx})">Eliminar</button>
-                    </div>
-                `;
+                htmlPagos += `<div class="item-row"><div class="item-info"><h4>💳 ${p.nombre}</h4><p>${p.cuenta}</p></div><button class="btn-del-mini" onclick="eliminarMetodoPago(${idx})">Eliminar</button></div>`;
             });
             document.getElementById('listaPagosAdmin').innerHTML = htmlPagos;
 
@@ -270,68 +285,38 @@
                 htmlFunciones = `<p style="color:#888; font-size:12px; text-align:center;">No hay funciones adicionales.</p>`;
             } else {
                 funcionesCustom.forEach((f, idx) => {
-                    htmlFunciones += `
-                        <div class="item-row">
-                            <div class="item-info">
-                                <h4>${f.icono || '⭐'} ${f.nombre}</h4>
-                                <p>${f.desc}</p>
-                            </div>
-                            <button class="btn-del-mini" onclick="eliminarFuncionCustom(${idx})">Eliminar</button>
-                        </div>
-                    `;
+                    htmlFunciones += `<div class="item-row"><div class="item-info"><h4>${f.icono || '⭐'} ${f.nombre}</h4><p>${f.desc}</p></div><button class="btn-del-mini" onclick="eliminarFuncionCustom(${idx})">Eliminar</button></div>`;
                 });
             }
             document.getElementById('listaFuncionesAdmin').innerHTML = htmlFunciones;
 
             let htmlRubros = '';
             rubros.forEach(r => {
-                htmlRubros += `
-                    <div class="item-row">
-                        <div class="item-info"><h4>🏷️ ${r}</h4></div>
-                        <button class="btn-del-mini" onclick="eliminarRubro('${r}')">Eliminar</button>
-                    </div>
-                `;
+                htmlRubros += `<div class="item-row"><div class="item-info"><h4>🏷️ ${r}</h4></div><button class="btn-del-mini" onclick="eliminarRubro('${r}')">Eliminar</button></div>`;
             });
             document.getElementById('listaRubrosAdmin').innerHTML = htmlRubros;
 
             let htmlUsuarios = '';
             if(usuarios.length === 0) {
-                htmlUsuarios = `<p style="color:#888; font-size:12px; text-align:center;">No hay usuarios registrados.</p>`;
+                htmlUsuarios = `<p style="color:#888; font-size:12px; text-align:center;">No hay usuarios.</p>`;
             } else {
                 usuarios.forEach((u, idx) => {
-                    htmlUsuarios += `
-                        <div class="item-row">
-                            <div class="item-info">
-                                <h4>${u.nombre} (${u.username})</h4>
-                                <p>Rol: ${u.rol} • Distrito: ${u.distrito}</p>
-                            </div>
-                            <button class="btn-del-mini" onclick="eliminarUsuario(${idx})">Borrar</button>
-                        </div>
-                    `;
+                    htmlUsuarios += `<div class="item-row"><div class="item-info"><h4>${u.nombre} (${u.username})</h4><p>Rol: ${u.rol}</p></div><button class="btn-del-mini" onclick="eliminarUsuario(${idx})">Borrar</button></div>`;
                 });
             }
             document.getElementById('listaUsuariosAdmin').innerHTML = htmlUsuarios;
 
             let htmlAvisos = '';
             if(avisos.length === 0) {
-                htmlAvisos = `<p style="color:#888; font-size:12px; text-align:center;">No hay avisos publicados.</p>`;
+                htmlAvisos = `<p style="color:#888; font-size:12px; text-align:center;">No hay avisos.</p>`;
             } else {
                 avisos.forEach(a => {
-                    htmlAvisos += `
-                        <div class="item-row">
-                            <div class="item-info">
-                                <h4>${a.titulo}</h4>
-                                <p>📍 ${a.distrito} • 💰 ${a.pago}</p>
-                            </div>
-                            <button class="btn-del-mini" onclick="eliminarAvisoAdmin(${a.id})">Borrar</button>
-                        </div>
-                    `;
+                    htmlAvisos += `<div class="item-row"><div class="item-info"><h4>${a.titulo}</h4><p>📍 ${a.distrito}</p></div><button class="btn-del-mini" onclick="eliminarAvisoAdmin(${a.id})">Borrar</button></div>`;
                 });
             }
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
-        // Listar automáticamente TODOS los archivos .html directamente desde GitHub
         async function listarArchivosGitHub() {
             const select = document.getElementById('archivoSelect');
             try {
@@ -350,226 +335,157 @@
                     });
                     cargarCodigoGitHub();
                 }
-            } catch (e) {
-                console.error("Error al listar archivos de GitHub", e);
-            }
+            } catch (e) { console.error(e); }
         }
 
         async function crearNuevoArchivoGitHub() {
             let nombreArchivo = document.getElementById('nuevoNombreArchivo').value.trim();
             const contenido = document.getElementById('nuevoCodigoArchivo').value;
-
-            if(!nombreArchivo) {
-                alert('Escribe el nombre del archivo (ej: calculadora.html)');
-                return;
-            }
-
-            if(!nombreArchivo.endsWith('.html')) {
-                nombreArchivo += '.html';
-            }
+            if(!nombreArchivo) return alert('Escribe el nombre del archivo');
+            if(!nombreArchivo.endsWith('.html')) nombreArchivo += '.html';
 
             let token = localStorage.getItem('github_token');
-            if(!token) {
-                token = prompt("🔑 Ingresa tu Token de GitHub por única vez:");
-                if(!token) return;
-                localStorage.setItem('github_token', token.trim());
-            }
-
-            alert(`Creando el archivo ${nombreArchivo} en GitHub...`);
+            if(!token) { token = prompt("🔑 Ingresa tu Token de GitHub:"); if(!token) return; localStorage.setItem('github_token', token.trim()); }
 
             try {
                 const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${nombreArchivo}`;
-
                 const resPut = await fetch(url, {
                     method: "PUT",
-                    headers: {
-                        "Authorization": `token ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: `Creación automática de ${nombreArchivo} desde Panel Admin`,
-                        content: btoa(unescape(encodeURIComponent(contenido || '<!-- Nuevo archivo -->')))
-                    })
+                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: `Creación de ${nombreArchivo}`, content: btoa(unescape(encodeURIComponent(contenido || '<!-- Archivo nuevo -->'))) })
                 });
-
-                if(resPut.ok) {
-                    alert(`¡Archivo ${nombreArchivo} creado con éxito en GitHub! Ya aparece en tu lista.`);
-                    document.getElementById('nuevoNombreArchivo').value = '';
-                    document.getElementById('nuevoCodigoArchivo').value = '';
-                    cargarPanelAdmin(); // Actualizar selector al instante
-                } else {
-                    const err = await resPut.json();
-                    alert("Error al crear archivo: " + err.message);
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Ocurrió un error al intentar crear el archivo.");
-            }
+                if(resPut.ok) { alert(`¡Creado con éxito!`); cargarPanelAdmin(); }
+                else { alert("Error al crear archivo."); }
+            } catch (e) { alert("Error de red."); }
         }
 
         async function cargarCodigoGitHub() {
             const archivoSelect = document.getElementById('archivoSelect').value;
             if(!archivoSelect) return;
-            const archivo = archivoSelect + '.html';
             const textarea = document.getElementById('editorCodigo');
-            textarea.value = "Descargando código desde GitHub...";
-
+            textarea.value = "Descargando código...";
             try {
-                const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${archivo}`;
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${archivoSelect}.html`;
                 const res = await fetch(url);
                 if(res.ok) {
                     const data = await res.json();
-                    const contenidoDecodificado = decodeURIComponent(escape(atob(data.content)));
-                    textarea.value = contenidoDecodificado;
-                } else {
-                    textarea.value = `<!-- El archivo ${archivo} no se pudo cargar. -->`;
+                    textarea.value = decodeURIComponent(escape(atob(data.content)));
+                    actualizarLineas();
                 }
-            } catch (e) {
-                textarea.value = `<!-- Error de conexión al cargar ${archivo} -->`;
+            } catch (e) { textarea.value = "Error al cargar código."; }
+        }
+
+        function actualizarLineas() {
+            const textarea = document.getElementById('editorCodigo');
+            const lineNumbers = document.getElementById('lineNumbers');
+            const lineas = textarea.value.split('\n').length;
+            let html = '';
+            for(let i = 1; i <= lineas; i++) {
+                html += i + '<br>';
             }
+            lineNumbers.innerHTML = html;
+        }
+
+        function sincronizarScroll() {
+            const textarea = document.getElementById('editorCodigo');
+            const lineNumbers = document.getElementById('lineNumbers');
+            lineNumbers.scrollTop = textarea.scrollTop;
         }
 
         async function guardarEnGitHubDirecto() {
             let token = localStorage.getItem('github_token');
-            if(!token) {
-                token = prompt("🔑 Ingresa tu Token de GitHub:");
-                if(!token) return;
-                localStorage.setItem('github_token', token.trim());
-            }
+            if(!token) { token = prompt("🔑 Ingresa tu Token de GitHub:"); if(!token) return; localStorage.setItem('github_token', token.trim()); }
 
             const archivoSelect = document.getElementById('archivoSelect').value;
             const archivo = archivoSelect + '.html';
             const nuevoContenido = document.getElementById('editorCodigo').value;
 
-            alert("Conectando con GitHub para actualizar el repositorio...");
-
             try {
                 const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${archivo}`;
-
-                const resGet = await fetch(url, {
-                    headers: { "Authorization": `token ${token}` }
-                });
-                
-                if(!resGet.ok) {
-                    localStorage.removeItem('github_token');
-                    alert("⚠️ Token inválido. Vuelve a intentarlo.");
-                    return;
-                }
-
+                const resGet = await fetch(url, { headers: { "Authorization": `token ${token}` } });
+                if(!resGet.ok) { localStorage.removeItem('github_token'); return alert("Token inválido."); }
                 const fileData = await resGet.json();
-                const shaActual = fileData.sha;
 
                 const resPut = await fetch(url, {
                     method: "PUT",
-                    headers: {
-                        "Authorization": `token ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: `Actualización de ${archivo} desde Panel Admin`,
-                        content: btoa(unescape(encodeURIComponent(nuevoContenido))),
-                        sha: shaActual
-                    })
+                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: `Actualización de ${archivo}`, content: btoa(unescape(encodeURIComponent(nuevoContenido))), sha: fileData.sha })
                 });
 
-                if(resPut.ok) {
-                    alert(`¡Éxito total! 🚀 ${archivo} se actualizó en GitHub.`);
-                } else {
-                    const err = await resPut.json();
-                    alert("Error al actualizar: " + err.message);
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Ocurrió un error de conexión.");
-            }
+                if(resPut.ok) alert(`¡Éxito total! 🚀 ${archivo} actualizado en GitHub.`);
+                else alert("Error al actualizar.");
+            } catch (e) { alert("Error de conexión."); }
         }
 
         function agregarMetodoPagoMaster() {
-            const nombre = document.getElementById('nombrePagoInput').value.trim();
-            const cuenta = document.getElementById('cuentaPagoInput').value.trim();
-            if(!nombre || !cuenta) return;
-            let metodos = JSON.parse(localStorage.getItem('pagos_custom')) || [];
-            metodos.push({ nombre, cuenta });
-            localStorage.setItem('pagos_custom', JSON.stringify(metodos));
+            let n = document.getElementById('nombrePagoInput').value.trim();
+            let c = document.getElementById('cuentaPagoInput').value.trim();
+            if(!n || !c) return;
+            let m = JSON.parse(localStorage.getItem('pagos_custom')) || [];
+            m.push({nombre: n, cuenta: c});
+            localStorage.setItem('pagos_custom', JSON.stringify(m));
             document.getElementById('nombrePagoInput').value = '';
             document.getElementById('cuentaPagoInput').value = '';
             cargarPanelAdmin();
         }
-
         function eliminarMetodoPago(idx) {
-            let metodos = JSON.parse(localStorage.getItem('pagos_custom')) || [];
-            metodos.splice(idx, 1);
-            localStorage.setItem('pagos_custom', JSON.stringify(metodos));
+            let m = JSON.parse(localStorage.getItem('pagos_custom')) || [];
+            m.splice(idx, 1);
+            localStorage.setItem('pagos_custom', JSON.stringify(m));
             cargarPanelAdmin();
         }
-
         function crearNuevaFuncionApp() {
-            const nombre = document.getElementById('nuevoNombreFuncion').value.trim();
-            const icono = document.getElementById('nuevoIconoFuncion').value.trim() || '⭐';
-            const desc = document.getElementById('nuevoDescFuncion').value.trim() || 'Nueva función';
-            if(!nombre) return;
-            let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
-            funciones.push({ nombre, icono, desc });
-            localStorage.setItem('funciones_custom', JSON.stringify(funciones));
-            document.getElementById('nuevoNombreFuncion').value = '';
-            document.getElementById('nuevoIconoFuncion').value = '';
-            document.getElementById('nuevoDescFuncion').value = '';
+            let n = document.getElementById('nuevoNombreFuncion').value.trim();
+            let ic = document.getElementById('nuevoIconoFuncion').value.trim() || '⭐';
+            let d = document.getElementById('nuevoDescFuncion').value.trim() || '';
+            if(!n) return;
+            let f = JSON.parse(localStorage.getItem('funciones_custom')) || [];
+            f.push({nombre: n, icono: ic, desc: d});
+            localStorage.setItem('funciones_custom', JSON.stringify(f));
             cargarPanelAdmin();
         }
-
         function eliminarFuncionCustom(idx) {
-            let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
-            funciones.splice(idx, 1);
-            localStorage.setItem('funciones_custom', JSON.stringify(funciones));
+            let f = JSON.parse(localStorage.getItem('funciones_custom')) || [];
+            f.splice(idx, 1);
+            localStorage.setItem('funciones_custom', JSON.stringify(f));
             cargarPanelAdmin();
         }
-
         function publicarAnuncioMaster() {
-            const texto = document.getElementById('anuncioInput').value.trim();
-            if(!texto) return;
-            localStorage.setItem('anuncio_global', texto);
+            let t = document.getElementById('anuncioInput').value.trim();
+            if(!t) return;
+            localStorage.setItem('anuncio_global', t);
             document.getElementById('anuncioInput').value = '';
             alert('¡Anuncio lanzado!');
         }
-
         function guardarModulos() {
-            const modulos = {
-                chat: document.getElementById('modChat').checked,
-                calif: document.getElementById('modCalif').checked,
-                urgente: document.getElementById('modUrgente').checked
-            };
-            localStorage.setItem('modulos_config', JSON.stringify(modulos));
+            let md = { chat: document.getElementById('modChat').checked, calif: document.getElementById('modCalif').checked, urgente: document.getElementById('modUrgente').checked };
+            localStorage.setItem('modulos_config', JSON.stringify(md));
         }
-
         function agregarRubroMaster() {
-            const nuevo = document.getElementById('nuevoRubroInput').value.trim();
-            if(!nuevo) return;
-            let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
-            if(rubros.includes(nuevo)) return;
-            rubros.push(nuevo);
-            localStorage.setItem('rubros_custom', JSON.stringify(rubros));
+            let r = document.getElementById('nuevoRubroInput').value.trim();
+            if(!r) return;
+            let rb = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
+            if(!rb.includes(r)) rb.push(r);
+            localStorage.setItem('rubros_custom', JSON.stringify(rb));
             document.getElementById('nuevoRubroInput').value = '';
             cargarPanelAdmin();
         }
-
         function eliminarRubro(rubro) {
-            let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
-            rubros = rubros.filter(r => r !== rubro);
-            localStorage.setItem('rubros_custom', JSON.stringify(rubros));
+            let rb = JSON.parse(localStorage.getItem('rubros_custom')) || [];
+            rb = rb.filter(x => x !== rubro);
+            localStorage.setItem('rubros_custom', JSON.stringify(rb));
             cargarPanelAdmin();
         }
-
         function eliminarUsuario(idx) {
-            let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
-            usuarios.splice(idx, 1);
-            localStorage.setItem('usuarios_db', JSON.stringify(usuarios));
+            let u = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+            u.splice(idx, 1);
+            localStorage.setItem('usuarios_db', JSON.stringify(u));
             cargarPanelAdmin();
         }
-
         function eliminarAvisoAdmin(id) {
-            let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
-            avisos = avisos.filter(a => a.id !== id);
-            localStorage.setItem('avisos', JSON.stringify(avisos));
+            let a = JSON.parse(localStorage.getItem('avisos')) || [];
+            a = a.filter(x => x.id !== id);
+            localStorage.setItem('avisos', JSON.stringify(a));
             cargarPanelAdmin();
         }
 
