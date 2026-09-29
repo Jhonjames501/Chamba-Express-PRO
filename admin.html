@@ -32,38 +32,42 @@
         }
         .input-box:focus, textarea:focus, select:focus { border-color: #00ff88; }
         
-        /* EDITOR ESTILO GITHUB CON LÍNEAS NUMERADAS */
+        /* EDITOR ESTILO GITHUB SIN EXCESO DE LÍNEAS */
         .editor-wrapper {
             display: flex;
             background: #0a0a0a;
             border: 1px solid #333;
             border-radius: 10px;
             overflow: hidden;
+            height: 320px;
         }
         .line-numbers {
             background: #111;
-            color: #555;
-            padding: 12px 6px;
+            color: #666;
+            padding: 12px 8px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 12px;
             text-align: right;
             user-select: none;
             line-height: 1.4;
-            min-width: 35px;
+            min-width: 40px;
             border-right: 1px solid #222;
+            overflow: hidden;
         }
         .code-editor {
             font-family: 'Courier New', Courier, monospace;
             font-size: 12px;
             background: transparent;
             color: #00ff88;
-            height: 320px;
+            height: 100%;
             line-height: 1.4;
             border: none;
-            resize: vertical;
-            padding-left: 10px;
+            resize: none;
+            padding: 12px;
             white-space: pre;
+            overflow-y: scroll;
             overflow-x: auto;
+            flex-grow: 1;
         }
 
         .btn-action {
@@ -130,13 +134,13 @@
             <button class="btn-action" onclick="crearNuevoArchivoGitHub()">✨ Crear Archivo en GitHub</button>
         </div>
 
-        <!-- 2. EDITOR DE CÓDIGO CON LÍNEAS NUMERADAS -->
+        <!-- 2. EDITOR DE CÓDIGO CON LÍNEAS EXACTAS -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
             <h3>💻 Editor de Código (Estilo GitHub)</h3>
             <div class="form-group">
                 <label>Selecciona el archivo a editar</label>
                 <select id="archivoSelect" class="input-box" onchange="cargarCodigoGitHub()">
-                    <!-- Se llena automáticamente con todos tus archivos -->
+                    <!-- Se llena automáticamente -->
                 </select>
             </div>
             <div class="form-group">
