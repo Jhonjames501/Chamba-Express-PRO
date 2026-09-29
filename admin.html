@@ -91,7 +91,7 @@
             </div>
         </div>
 
-        <!-- 1. EDITOR DE CÓDIGO CONECTADO DIRECTO A GITHUB -->
+        <!-- 1. EDITOR DE CÓDIGO CONECTADO DIRECTO A GITHUB (TOKEN ÚNICO) -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
             <h3>💻 Editor de Código (Conexión Directa a GitHub)</h3>
             <div class="form-group">
@@ -218,9 +218,8 @@
             location.href = 'index.html';
         }
 
-        // Configuración de tu repositorio en GitHub
-        const GITHUB_USER = "Jhonjames501"; // Tu usuario de GitHub visto en tus enlaces
-        const GITHUB_REPO = "Chamba-Express-PRO"; // El nombre exacto de tu repositorio
+        const GITHUB_USER = "Jhonjames501";
+        const GITHUB_REPO = "Chamba-Express-PRO";
 
         function cargarPanelAdmin() {
             let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
@@ -243,7 +242,6 @@
 
             cargarCodigoGitHub();
 
-            // Renderizar Métodos de Pago
             let htmlPagos = '';
             metodosPago.forEach((p, idx) => {
                 htmlPagos += `
@@ -258,7 +256,6 @@
             });
             document.getElementById('listaPagosAdmin').innerHTML = htmlPagos;
 
-            // Renderizar Funciones Custom
             let htmlFunciones = '';
             if(funcionesCustom.length === 0) {
                 htmlFunciones = `<p style="color:#888; font-size:12px; text-align:center;">No hay funciones adicionales.</p>`;
@@ -277,7 +274,6 @@
             }
             document.getElementById('listaFuncionesAdmin').innerHTML = htmlFunciones;
 
-            // Renderizar Rubros
             let htmlRubros = '';
             rubros.forEach(r => {
                 htmlRubros += `
@@ -289,7 +285,6 @@
             });
             document.getElementById('listaRubrosAdmin').innerHTML = htmlRubros;
 
-            // Renderizar Usuarios
             let htmlUsuarios = '';
             if(usuarios.length === 0) {
                 htmlUsuarios = `<p style="color:#888; font-size:12px; text-align:center;">No hay usuarios registrados.</p>`;
@@ -308,7 +303,6 @@
             }
             document.getElementById('listaUsuariosAdmin').innerHTML = htmlUsuarios;
 
-            // Renderizar Avisos
             let htmlAvisos = '';
             if(avisos.length === 0) {
                 htmlAvisos = `<p style="color:#888; font-size:12px; text-align:center;">No hay avisos publicados.</p>`;
@@ -328,7 +322,6 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
-        // Descargar código real directamente desde GitHub para editar
         async function cargarCodigoGitHub() {
             const archivo = document.getElementById('archivoSelect').value + '.html';
             const textarea = document.getElementById('editorCodigo');
@@ -339,49 +332,49 @@
                 const res = await fetch(url);
                 if(res.ok) {
                     const data = await res.json();
-                    // Decodificar Base64 de GitHub a texto legible
                     const contenidoDecodificado = decodeURIComponent(escape(atob(data.content)));
                     textarea.value = contenidoDecodificado;
                 } else {
-                    textarea.value = `<!-- No se pudo cargar el archivo ${archivo} desde GitHub. Puedes escribir código aquí directamente. -->`;
+                    textarea.value = `<!-- No se pudo cargar el archivo ${archivo} desde GitHub. -->`;
                 }
             } catch (e) {
                 textarea.value = `<!-- Error de conexión al cargar ${archivo} -->`;
             }
         }
 
-        // Enviar cambios directo a GitHub mediante la API
+        // Guardado inteligente: Pide el token solo la primera vez y lo guarda en el navegador para siempre
         async function guardarEnGitHubDirecto() {
+            let token = localStorage.getItem('github_token');
+            
+            if(!token) {
+                token = prompt("🔑 Ingresa tu Token de GitHub por única vez (quedará guardado de forma segura en tu navegador):");
+                if(!token) return;
+                token = token.trim();
+                localStorage.setItem('github_token', token);
+            }
+
             const archivo = document.getElementById('archivoSelect').value + '.html';
             const nuevoContenido = document.getElementById('editorCodigo').value;
-
-            let token = localStorage.getItem('github_token');
-            if(!token) {
-                token = prompt("Ingresa tu Token Personal de GitHub (el que acabas de generar):");
-                if(!token) return;
-                localStorage.setItem('github_token', token.trim());
-            }
 
             alert("Conectando con GitHub para actualizar el repositorio...");
 
             try {
                 const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${archivo}`;
 
-                // 1. Obtener el SHA actual del archivo
                 const resGet = await fetch(url, {
                     headers: { "Authorization": `token ${token}` }
                 });
                 
                 if(!resGet.ok) {
-                    alert("Error: Token inválido o permisos insuficientes. Revisa tu token.");
+                    // Si el token es inválido o expiró, lo borramos para pedir uno nuevo
                     localStorage.removeItem('github_token');
+                    alert("⚠️ Error: El token guardado no es válido o expiró. Por favor vuelve a intentarlo e ingresa un token correcto.");
                     return;
                 }
 
                 const fileData = await resGet.json();
                 const shaActual = fileData.sha;
 
-                // 2. Enviar actualización PUT a GitHub
                 const resPut = await fetch(url, {
                     method: "PUT",
                     headers: {
@@ -396,7 +389,7 @@
                 });
 
                 if(resPut.ok) {
-                    alert(`¡Éxito total! ${archivo} se actualizó en GitHub correctamente. En unos segundos se reflejará en tu app.`);
+                    alert(`¡Éxito total! 🚀 ${archivo} se actualizó en GitHub correctamente. En unos segundos se reflejará en tu app.`);
                 } else {
                     const err = await resPut.json();
                     alert("Error al actualizar en GitHub: " + err.message);
@@ -404,7 +397,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert("Ocurrió un error al intentar guardar en GitHub.");
+                alert("Ocurrió un error de conexión al intentar guardar en GitHub.");
             }
         }
 
