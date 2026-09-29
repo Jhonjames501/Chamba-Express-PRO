@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Reclamos y Soporte - Chamba Express</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding-bottom: 90px; }
+        
+        .header {
+            background: linear-gradient(135deg, #ff4d4d 0%, #ff8080 100%);
+            color: #000; padding: 20px;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(0,0,0,0.15); border: none; color: #000; font-weight: 600; padding: 6px 12px; border-radius: 10px; text-decoration: none; font-size: 13px; }
+        
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        
+        .card {
+            background: #181818; border: 1px solid #333; border-radius: 16px; padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .card h3 { font-size: 16px; font-weight: 700; color: #ff4d4d; margin-bottom: 12px; }
+        
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: #ff8080; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+        .input-box, textarea, select {
+            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none;
+        }
+        .input-box:focus, textarea:focus, select:focus { border-color: #ff4d4d; }
+        
+        .btn-action {
+            background: #ff4d4d; color: #fff; font-weight: 800; border: none; width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 6px;
+        }
+
+        .ticket-item { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+        .ticket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .ticket-title { font-size: 14px; font-weight: 700; color: #fff; }
+        .ticket-badge { font-size: 10px; background: #ff4d4d; color: #fff; padding: 3px 8px; border-radius: 6px; font-weight: bold; }
+        .ticket-desc { font-size: 12px; color: #bbb; margin-bottom: 8px; }
+        .ticket-footer { font-size: 11px; color: #888; display: flex; justify-content: space-between; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00ff88; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-top">
+            <a href="index.html" class="back-btn">← Volver a la App</a>
+            <span style="font-size: 12px; font-weight: 700;">🛡️ Soporte y Seguridad</span>
+        </div>
+        <h1 style="font-size: 20px;">Centro de Reclamos</h1>
+    </div>
+
+    <div class="container" style="margin-top: 20px;">
+        <!-- Formulario para enviar reclamo -->
+        <div class="card">
+            <h3>🚨 Reportar un Problema o Incidente</h3>
+            <div class="form-group">
+                <label>Tipo de Motivo</label>
+                <select id="tipoReclamo" class="input-box">
+                    <option value="Estafa o Mal Pago">Estafa o Incumplimiento de Pago</option>
+                    <option value="Aviso Falso o Spam">Aviso Falso o Publicidad Engañosa</option>
+                    <option value="Trato Inadecuado">Trato Inadecuado / Hostigamiento</option>
+                    <option value="Error en la App">Error Técnico en la Aplicación</option>
+                    <option value="Otro">Otro Motivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Título del Reporte</label>
+                <input type="text" id="tituloReclamo" class="input-box" placeholder="Ej: No me pagaron el jornal acordado">
+            </div>
+            <div class="form-group">
+                <label>Detalles del Caso (Nombres, números, fechas)</label>
+                <textarea id="detalleReclamo" rows="3" class="input-box" placeholder="Explica brevemente qué sucedió..."></textarea>
+            </div>
+            <button class="btn-action" onclick="enviarReclamo()">Enviar Reporte al Administrador</button>
+        </div>
+
+        <!-- Mis Reclamos / Estado -->
+        <div class="card">
+            <h3>📂 Mis Reportes Enviados</h3>
+            <div id="listaMisReclamos"></div>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Buscar</a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Postulaciones</a>
+        <a href="mensajes.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>Mensajes</a>
+        <a href="perfil.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil</a>
+    </nav>
+
+    <script>
+        function enviarReclamo() {
+            const tipo = document.getElementById('tipoReclamo').value;
+            const titulo = document.getElementById('tituloReclamo').value.trim();
+            const detalle = document.getElementById('detalleReclamo').value.trim();
+            const usuario = localStorage.getItem('nombre') || 'Usuario Anónimo';
+
+            if(!titulo || !detalle) {
+                alert('Por favor completa todos los campos del reporte.');
+                return;
+            }
+
+            let reclamos = JSON.parse(localStorage.getItem('reclamos_db')) || [];
+            const nuevoReclamo = {
+                id: Date.now(),
+                usuario: usuario,
+                tipo: tipo,
+                titulo: titulo,
+                detalle: detalle,
+                estado: 'Pendiente de revisión',
+                fecha: new Date().toLocaleDateString()
+            };
+
+            reclamos.unshift(nuevoReclamo);
+            localStorage.setItem('reclamos_db', JSON.stringify(reclamos));
+
+            document.getElementById('tituloReclamo').value = '';
+            document.getElementById('detalleReclamo').value = '';
+
+            alert('¡Reporte enviado con éxito! El administrador evaluará tu caso.');
+            cargarReclamos();
+        }
+
+        function cargarReclamos() {
+            let reclamos = JSON.parse(localStorage.getItem('reclamos_db')) || [];
+            let html = '';
+
+            if(reclamos.length === 0) {
+                html = '<p style="color:#888; font-size:12px; text-align:center;">No tienes reportes enviados.</p>';
+            } else {
+                reclamos.forEach(r => {
+                    html += `
+                        <div class="ticket-item">
+                            <div class="ticket-header">
+                                <span class="ticket-title">[${r.tipo}] ${r.titulo}</span>
+                                <span class="ticket-badge">${r.estado}</span>
+                            </div>
+                            <div class="ticket-desc">${r.detalle}</div>
+                            <div class="ticket-footer">
+                                <span>👤 ${r.usuario}</span>
+                                <span>📅 ${r.fecha}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('listaMisReclamos').innerHTML = html;
+        }
+
+        cargarReclamos();
+    </script>
+</body>
+</html>
