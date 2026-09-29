@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
+*{font-family:Arial;box-sizing:border-box}body{background:#0f0f0f;color:white;padding:20px}
+.card{background:#1e1e1e;padding:20px;border-radius:20px;border:1px solid #333;margin-bottom:15px}
+.stars{color:#00ff88;font-size:22px}
+input,textarea{width:100%;padding:12px;border-radius:10px;background:#0f0f0f;border:1px solid #333;color:white;margin:6px 0}
+.btn{background:#00ff88;color:black;padding:14px;width:100%;border-radius:12px;font-weight:800;border:none}
+.back{color:#00ff88;text-decoration:none}
+.coment{background:#0f0f0f;padding:12px;border-radius:10px;margin-top:8px;border:1px solid #222}
+</style></head><body>
+<a href="index.html" class="back">← Volver</a>
+<div class="card" id="info"></div>
+<div class="card">
+<h3>Calificar a este trabajador</h3>
+<select id="estrellas"><option value="5">⭐⭐⭐⭐⭐ Excelente</option><option value="4">⭐⭐⭐⭐ Bueno</option><option value="3">⭐⭐⭐ Regular</option><option value="2">⭐⭐ Malo</option><option value="1">⭐ Muy malo</option></select>
+<input id="nombreEmpCal" placeholder="Tu nombre (empleador)">
+<textarea id="comentario" placeholder="Comenta su comportamiento: puntual, responsable..."></textarea>
+<button class="btn" onclick="calificar()">ENVIAR CALIFICACIÓN</button>
+</div>
+<div id="listaComentarios"></div>
+<script>
+let nombreTrab = new URLSearchParams(location.search).get('trabajador') || localStorage.getItem('nombre') || 'Trabajador';
+let califs = JSON.parse(localStorage.getItem('califs_'+nombreTrab) || '[]');
+let promedio = califs.length ? (califs.reduce((a,b)=>a+parseInt(b.estrellas),0)/califs.length).toFixed(1) : '5.0';
+document.getElementById('info').innerHTML=`<h2>${nombreTrab}</h2><div class="stars">${'⭐'.repeat(Math.round(promedio))} ${promedio}</div><small>${califs.length} calificaciones • SJL • Albañil</small>`;
+function mostrarComents(){
+ document.getElementById('listaComentarios').innerHTML=califs.map(c=>`<div class="card"><div class="stars">${'⭐'.repeat(c.estrellas)}</div><b>${c.empleador}</b><div class="coment">${c.texto}</div></div>`).join('') || '<p style="color:#666;text-align:center">Aún sin comentarios</p>';
+}
+function calificar(){
+ if(!comentario.value){alert('Escribe un comentario');return;}
+ califs.unshift({estrellas:estrellas.value, empleador:nombreEmpCal.value||'Empleador', texto:comentario.value});
+ localStorage.setItem('califs_'+nombreTrab, JSON.stringify(califs));
+ alert('Calificación enviada'); location.reload();
+}
+mostrarComents();
+</script></body></html>
