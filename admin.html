@@ -32,7 +32,7 @@
         }
         .input-box:focus, textarea:focus, select:focus { border-color: #00ff88; }
         
-        /* EDITOR ESTILO GITHUB SIN EXCESO DE LÍNEAS */
+        /* EDITOR ESTILO GITHUB PERFECTO */
         .editor-wrapper {
             display: flex;
             background: #0a0a0a;
@@ -337,7 +337,9 @@
                             select.appendChild(option);
                         }
                     });
-                    cargarCodigoGitHub();
+                    if (!document.getElementById('editorCodigo').value || document.getElementById('editorCodigo').value.startsWith("Descargando")) {
+                        cargarCodigoGitHub();
+                    }
                 }
             } catch (e) { console.error(e); }
         }
