@@ -1,10 +1,28 @@
-<h2>Publicar Aviso</h2>
-<select id="rubro">
-<option>Construccion</option><option>Mudanza</option><option>Limpieza</option><option>Cocina</option><option>Delivery</option><option>Gamarra</option>
-</select>
-<input id="titulo" placeholder="Ej: 2 ayudantes para contenedor">
-<input id="distrito" placeholder="Distrito: La Victoria">
-<input id="pago" placeholder="Pago S/ 80">
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
+*{font-family:Arial,sans-serif;box-sizing:border-box}body{background:#0f0f0f;color:white;padding:20px}
+input,select{width:100%;padding:15px;margin:8px 0;border-radius:12px;border:1px solid #333;background:#1e1e1e;color:white;font-size:15px}
+.btn{background:#00ff88;color:black;border:none;padding:16px;width:100%;border-radius:15px;font-weight:800;font-size:16px;margin-top:15px}
+.back{color:#00ff88;text-decoration:none}
+.card{background:#1e1e1e;padding:20px;border-radius:20px;margin-top:15px;border:1px solid #333}
+</style></head><body>
+<a href="index.html" class="back">← Volver</a>
+<h2 style="margin-top:15px">Publicar Chamba</h2>
+<p style="color:#aaa;font-size:13px">Los trabajadores te escribirán directo a tu WhatsApp</p>
+<div class="card">
+<select id="rubro"><option>Construccion</option><option>Mudanza</option><option>Limpieza</option><option>Cocina</option><option>Delivery</option><option>Gamarra</option><option>Seguridad</option><option>Barbería</option></select>
+<input id="titulo" placeholder="¿Qué necesitas? Ej: 2 ayudantes para mudanza">
+<input id="distrito" placeholder="Distrito Ej: Gamarra - La Victoria">
+<input id="pago" placeholder="Pago Ej: S/ 80 por día">
 <input id="whatsapp" placeholder="Tu WhatsApp 9XXXXXXXX">
-<button onclick="publicar()">PUBLICAR</button>
-<script src="app.js"></script>
+<input id="nombreEmp" placeholder="Tu nombre / empresa">
+<button class="btn" onclick="publicar()">PUBLICAR AHORA 🚀</button>
+</div>
+<script>
+function publicar(){
+ let avisos=JSON.parse(localStorage.getItem('avisos')||'[]');
+ avisos.unshift({rubro:rubro.value,titulo:titulo.value,distrito:distrito.value,pago:pago.value,whatsapp:whatsapp.value,tag:'NUEVO'});
+ localStorage.setItem('avisos',JSON.stringify(avisos));
+ alert('¡Chamba publicada! Ya aparece en inicio'); location.href='index.html';
+}
+</script></body></html>
