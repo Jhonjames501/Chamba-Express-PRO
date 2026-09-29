@@ -75,7 +75,7 @@
     </div>
 
     <div class="container" style="margin-top: 20px;">
-        <!-- Estadísticas -->
+        <!-- Estadísticas del Sistema -->
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-num" id="statAvisos">0</div>
@@ -91,7 +91,21 @@
             </div>
         </div>
 
-        <!-- 1. EDITOR DE CÓDIGO CONECTADO DIRECTO A GITHUB (TOKEN ÚNICO) -->
+        <!-- 1. CREAR UN NUEVO ARCHIVO DIRECTO EN GITHUB -->
+        <div class="admin-card" style="border: 2px dashed #00ff88;">
+            <h3>📄 Crear un Nuevo Archivo en la App</h3>
+            <div class="form-group">
+                <label>Nombre del Archivo (Ej: calculadora.html o reclamos.html)</label>
+                <input type="text" id="nuevoNombreArchivo" class="input-box" placeholder="nombre.html">
+            </div>
+            <div class="form-group">
+                <label>Código Inicial del Archivo</label>
+                <textarea id="nuevoCodigoArchivo" rows="4" class="input-box" placeholder="<!DOCTYPE html><html>...</html>"></textarea>
+            </div>
+            <button class="btn-action" onclick="crearNuevoArchivoGitHub()">✨ Crear Archivo en GitHub</button>
+        </div>
+
+        <!-- 2. EDITOR DE CÓDIGO MAESTRO -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
             <h3>💻 Editor de Código (Conexión Directa a GitHub)</h3>
             <div class="form-group">
@@ -103,6 +117,7 @@
                     <option value="mensajes">mensajes.html (Mensajes)</option>
                     <option value="admin">admin.html (Panel Admin)</option>
                     <option value="login">login.html (Acceso)</option>
+                    <option value="reclamos">reclamos.html (Centro de Reclamos)</option>
                 </select>
             </div>
             <div class="form-group">
@@ -112,22 +127,22 @@
             <button class="btn-action" onclick="guardarEnGitHubDirecto()">🚀 Guardar y Subir a GitHub en Vivo</button>
         </div>
 
-        <!-- 2. GESTIÓN DE MÉTODOS DE PAGO -->
-        <div class="admin-card" style="border: 2px dashed #00ff88;">
+        <!-- 3. CONFIGURACIÓN DE MÉTODOS DE PAGO -->
+        <div class="admin-card">
             <h3>💳 Configuración de Métodos de Pago</h3>
             <div class="form-group">
-                <label>Nombre del Método (ej: Yape Oficial, Plin)</label>
+                <label>Nombre del Método</label>
                 <input type="text" id="nombrePagoInput" class="input-box" placeholder="Ej: Yape / Plin Chamba Express">
             </div>
             <div class="form-group">
                 <label>Número o Cuenta de Referencia</label>
-                <input type="text" id="cuentaPagoInput" class="input-box" placeholder="Ej: 912345678 (Titular: Jhon)">
+                <input type="text" id="cuentaPagoInput" class="input-box" placeholder="Ej: 912345678">
             </div>
             <button class="btn-action" onclick="agregarMetodoPagoMaster()">+ Agregar Método de Pago</button>
             <div id="listaPagosAdmin" style="margin-top: 15px;"></div>
         </div>
 
-        <!-- 3. CREAR NUEVAS FUNCIONES -->
+        <!-- 4. CREAR NUEVAS FUNCIONES -->
         <div class="admin-card">
             <h3>🚀 Agregar Nueva Función Global</h3>
             <div class="form-group">
@@ -149,7 +164,7 @@
             <div id="listaFuncionesAdmin"></div>
         </div>
 
-        <!-- 4. Anuncio Global -->
+        <!-- 5. ANUNCIO GLOBAL -->
         <div class="admin-card">
             <h3>📢 Publicar Anuncio Global</h3>
             <div class="form-group">
@@ -159,7 +174,7 @@
             <button class="btn-action" onclick="publicarAnuncioMaster()">Enviar Anuncio</button>
         </div>
 
-        <!-- 5. Control de Módulos Base -->
+        <!-- 6. MÓDULOS DEL SISTEMA -->
         <div class="admin-card">
             <h3>⚡ Módulos del Sistema</h3>
             <div class="toggle-row">
@@ -176,7 +191,7 @@
             </div>
         </div>
 
-        <!-- 6. Rubros -->
+        <!-- 7. RUBROS -->
         <div class="admin-card">
             <h3>➕ Agregar Nuevo Rubro Global</h3>
             <div class="form-group">
@@ -190,13 +205,13 @@
             <div id="listaRubrosAdmin"></div>
         </div>
 
-        <!-- 7. Usuarios Registrados -->
+        <!-- 8. USUARIOS REGISTRADOS -->
         <div class="admin-card">
             <h3>👥 Usuarios Registrados</h3>
             <div id="listaUsuariosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
 
-        <!-- 8. Moderación de Chambas -->
+        <!-- 9. MODERACIÓN DE CHAMBAS -->
         <div class="admin-card">
             <h3>🗑️ Moderación de Chambas</h3>
             <div id="listaAvisosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -322,6 +337,58 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
+        async function crearNuevoArchivoGitHub() {
+            let nombreArchivo = document.getElementById('nuevoNombreArchivo').value.trim();
+            const contenido = document.getElementById('nuevoCodigoArchivo').value;
+
+            if(!nombreArchivo) {
+                alert('Escribe el nombre del archivo (ej: calculadora.html)');
+                return;
+            }
+
+            if(!nombreArchivo.endsWith('.html')) {
+                nombreArchivo += '.html';
+            }
+
+            let token = localStorage.getItem('github_token');
+            if(!token) {
+                token = prompt("🔑 Ingresa tu Token de GitHub por única vez:");
+                if(!token) return;
+                localStorage.setItem('github_token', token.trim());
+            }
+
+            alert(`Creando el archivo ${nombreArchivo} en GitHub...`);
+
+            try {
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${nombreArchivo}`;
+
+                const resPut = await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Creación automática de ${nombreArchivo} desde Panel Admin`,
+                        content: btoa(unescape(encodeURIComponent(contenido || '<!-- Nuevo archivo -->')))
+                    })
+                });
+
+                if(resPut.ok) {
+                    alert(`¡Archivo ${nombreArchivo} creado con éxito en GitHub!`);
+                    document.getElementById('nuevoNombreArchivo').value = '';
+                    document.getElementById('nuevoCodigoArchivo').value = '';
+                    location.reload();
+                } else {
+                    const err = await resPut.json();
+                    alert("Error al crear archivo: " + err.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Ocurrió un error al intentar crear el archivo.");
+            }
+        }
+
         async function cargarCodigoGitHub() {
             const archivo = document.getElementById('archivoSelect').value + '.html';
             const textarea = document.getElementById('editorCodigo');
@@ -335,22 +402,19 @@
                     const contenidoDecodificado = decodeURIComponent(escape(atob(data.content)));
                     textarea.value = contenidoDecodificado;
                 } else {
-                    textarea.value = `<!-- No se pudo cargar el archivo ${archivo} desde GitHub. -->`;
+                    textarea.value = `<!-- El archivo ${archivo} aún no existe o no tiene contenido en GitHub. Puedes crearlo arriba. -->`;
                 }
             } catch (e) {
                 textarea.value = `<!-- Error de conexión al cargar ${archivo} -->`;
             }
         }
 
-        // Guardado inteligente: Pide el token solo la primera vez y lo guarda en el navegador para siempre
         async function guardarEnGitHubDirecto() {
             let token = localStorage.getItem('github_token');
-            
             if(!token) {
-                token = prompt("🔑 Ingresa tu Token de GitHub por única vez (quedará guardado de forma segura en tu navegador):");
+                token = prompt("🔑 Ingresa tu Token de GitHub:");
                 if(!token) return;
-                token = token.trim();
-                localStorage.setItem('github_token', token);
+                localStorage.setItem('github_token', token.trim());
             }
 
             const archivo = document.getElementById('archivoSelect').value + '.html';
@@ -366,9 +430,8 @@
                 });
                 
                 if(!resGet.ok) {
-                    // Si el token es inválido o expiró, lo borramos para pedir uno nuevo
                     localStorage.removeItem('github_token');
-                    alert("⚠️ Error: El token guardado no es válido o expiró. Por favor vuelve a intentarlo e ingresa un token correcto.");
+                    alert("⚠️ Token inválido. Vuelve a intentarlo.");
                     return;
                 }
 
@@ -382,83 +445,62 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        message: `Actualización de ${archivo} desde Panel Admin en vivo`,
+                        message: `Actualización de ${archivo} desde Panel Admin`,
                         content: btoa(unescape(encodeURIComponent(nuevoContenido))),
                         sha: shaActual
                     })
                 });
 
                 if(resPut.ok) {
-                    alert(`¡Éxito total! 🚀 ${archivo} se actualizó en GitHub correctamente. En unos segundos se reflejará en tu app.`);
+                    alert(`¡Éxito total! 🚀 ${archivo} se actualizó en GitHub.`);
                 } else {
                     const err = await resPut.json();
-                    alert("Error al actualizar en GitHub: " + err.message);
+                    alert("Error al actualizar: " + err.message);
                 }
-
             } catch (err) {
                 console.error(err);
-                alert("Ocurrió un error de conexión al intentar guardar en GitHub.");
+                alert("Ocurrió un error de conexión.");
             }
         }
 
         function agregarMetodoPagoMaster() {
             const nombre = document.getElementById('nombrePagoInput').value.trim();
             const cuenta = document.getElementById('cuentaPagoInput').value.trim();
-
-            if(!nombre || !cuenta) {
-                alert('Completa el nombre y la cuenta del método de pago.');
-                return;
-            }
-
+            if(!nombre || !cuenta) return;
             let metodos = JSON.parse(localStorage.getItem('pagos_custom')) || [];
             metodos.push({ nombre, cuenta });
             localStorage.setItem('pagos_custom', JSON.stringify(metodos));
-
             document.getElementById('nombrePagoInput').value = '';
             document.getElementById('cuentaPagoInput').value = '';
-
-            alert('¡Método de pago agregado correctamente!');
             cargarPanelAdmin();
         }
 
         function eliminarMetodoPago(idx) {
-            if(confirm('¿Eliminar este método de pago?')) {
-                let metodos = JSON.parse(localStorage.getItem('pagos_custom')) || [];
-                metodos.splice(idx, 1);
-                localStorage.setItem('pagos_custom', JSON.stringify(metodos));
-                cargarPanelAdmin();
-            }
+            let metodos = JSON.parse(localStorage.getItem('pagos_custom')) || [];
+            metodos.splice(idx, 1);
+            localStorage.setItem('pagos_custom', JSON.stringify(metodos));
+            cargarPanelAdmin();
         }
 
         function crearNuevaFuncionApp() {
             const nombre = document.getElementById('nuevoNombreFuncion').value.trim();
             const icono = document.getElementById('nuevoIconoFuncion').value.trim() || '⭐';
             const desc = document.getElementById('nuevoDescFuncion').value.trim() || 'Nueva función';
-
-            if(!nombre) {
-                alert('Escribe el nombre de la función.');
-                return;
-            }
-
+            if(!nombre) return;
             let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
             funciones.push({ nombre, icono, desc });
             localStorage.setItem('funciones_custom', JSON.stringify(funciones));
-
             document.getElementById('nuevoNombreFuncion').value = '';
             document.getElementById('nuevoIconoFuncion').value = '';
             document.getElementById('nuevoDescFuncion').value = '';
-
-            alert(`¡Función "${nombre}" publicada!`);
             cargarPanelAdmin();
         }
 
         function eliminarFuncionCustom(idx) {
-            if(confirm('¿Eliminar esta función?')) {
-                let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
-                funciones.splice(idx, 1);
-                localStorage.setItem('funciones_custom', JSON.stringify(funciones));
-                cargarPanelAdmin();
-            }
+            let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
+            funciones.splice(idx, 1);
+            localStorage.setItem('funciones_custom', JSON.stringify(funciones));
+            cargarPanelAdmin();
         }
 
         function publicarAnuncioMaster() {
@@ -466,7 +508,7 @@
             if(!texto) return;
             localStorage.setItem('anuncio_global', texto);
             document.getElementById('anuncioInput').value = '';
-            alert('¡Anuncio global lanzado!');
+            alert('¡Anuncio lanzado!');
         }
 
         function guardarModulos() {
@@ -486,7 +528,6 @@
             rubros.push(nuevo);
             localStorage.setItem('rubros_custom', JSON.stringify(rubros));
             document.getElementById('nuevoRubroInput').value = '';
-            alert(`¡Rubro "${nuevo}" agregado!`);
             cargarPanelAdmin();
         }
 
