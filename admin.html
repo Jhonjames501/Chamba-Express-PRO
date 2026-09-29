@@ -75,7 +75,7 @@
     </div>
 
     <div class="container" style="margin-top: 20px;">
-        <!-- Estadísticas del Sistema -->
+        <!-- Estadísticas -->
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-num" id="statAvisos">0</div>
@@ -91,28 +91,43 @@
             </div>
         </div>
 
-        <!-- 1. EDITOR DE CÓDIGO MAESTRO CON TODOS LOS ARCHIVOS -->
+        <!-- 1. EDITOR DE CÓDIGO CONECTADO DIRECTO A GITHUB -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
-            <h3>💻 Editor de Código de Todos tus Archivos</h3>
+            <h3>💻 Editor de Código (Conexión Directa a GitHub)</h3>
             <div class="form-group">
-                <label>Selecciona el archivo a editar en tiempo real</label>
-                <select id="archivoSelect" class="input-box" onchange="cargarCodigoArchivo()">
+                <label>Selecciona el archivo a editar</label>
+                <select id="archivoSelect" class="input-box" onchange="cargarCodigoGitHub()">
                     <option value="index">index.html (Pantalla Principal)</option>
                     <option value="perfil">perfil.html (Mi Perfil)</option>
                     <option value="publicar">publicar.html (Publicar Chamba)</option>
                     <option value="mensajes">mensajes.html (Mensajes)</option>
-                    <option value="admin">admin.html (Panel de Administrador)</option>
-                    <option value="login">login.html (Acceso y Login)</option>
+                    <option value="admin">admin.html (Panel Admin)</option>
+                    <option value="login">login.html (Acceso)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Código Fuente Real</label>
-                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Cargando código del archivo..."></textarea>
+                <label>Código Fuente Real en GitHub</label>
+                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Selecciona un archivo para cargar su código..."></textarea>
             </div>
-            <button class="btn-action" onclick="guardarCodigoReal()">💾 Guardar y Aplicar Cambios</button>
+            <button class="btn-action" onclick="guardarEnGitHubDirecto()">🚀 Guardar y Subir a GitHub en Vivo</button>
         </div>
 
-        <!-- 2. CREAR NUEVAS FUNCIONES -->
+        <!-- 2. GESTIÓN DE MÉTODOS DE PAGO -->
+        <div class="admin-card" style="border: 2px dashed #00ff88;">
+            <h3>💳 Configuración de Métodos de Pago</h3>
+            <div class="form-group">
+                <label>Nombre del Método (ej: Yape Oficial, Plin)</label>
+                <input type="text" id="nombrePagoInput" class="input-box" placeholder="Ej: Yape / Plin Chamba Express">
+            </div>
+            <div class="form-group">
+                <label>Número o Cuenta de Referencia</label>
+                <input type="text" id="cuentaPagoInput" class="input-box" placeholder="Ej: 912345678 (Titular: Jhon)">
+            </div>
+            <button class="btn-action" onclick="agregarMetodoPagoMaster()">+ Agregar Método de Pago</button>
+            <div id="listaPagosAdmin" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- 3. CREAR NUEVAS FUNCIONES -->
         <div class="admin-card">
             <h3>🚀 Agregar Nueva Función Global</h3>
             <div class="form-group">
@@ -129,14 +144,12 @@
             </div>
             <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Publicar Función para Todos</button>
         </div>
-
-        <!-- Listado de Funciones -->
         <div class="admin-card">
             <h3>⚙️ Funciones Activas</h3>
             <div id="listaFuncionesAdmin"></div>
         </div>
 
-        <!-- 3. Anuncio Global -->
+        <!-- 4. Anuncio Global -->
         <div class="admin-card">
             <h3>📢 Publicar Anuncio Global</h3>
             <div class="form-group">
@@ -146,7 +159,7 @@
             <button class="btn-action" onclick="publicarAnuncioMaster()">Enviar Anuncio</button>
         </div>
 
-        <!-- 4. Control de Módulos Base -->
+        <!-- 5. Control de Módulos Base -->
         <div class="admin-card">
             <h3>⚡ Módulos del Sistema</h3>
             <div class="toggle-row">
@@ -163,7 +176,7 @@
             </div>
         </div>
 
-        <!-- 5. Rubros -->
+        <!-- 6. Rubros -->
         <div class="admin-card">
             <h3>➕ Agregar Nuevo Rubro Global</h3>
             <div class="form-group">
@@ -177,13 +190,13 @@
             <div id="listaRubrosAdmin"></div>
         </div>
 
-        <!-- 6. Usuarios Registrados -->
+        <!-- 7. Usuarios Registrados -->
         <div class="admin-card">
             <h3>👥 Usuarios Registrados</h3>
             <div id="listaUsuariosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
 
-        <!-- 7. Moderación de Chambas -->
+        <!-- 8. Moderación de Chambas -->
         <div class="admin-card">
             <h3>🗑️ Moderación de Chambas</h3>
             <div id="listaAvisosAdmin" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -205,11 +218,19 @@
             location.href = 'index.html';
         }
 
+        // Configuración de tu repositorio en GitHub
+        const GITHUB_USER = "Jhonjames501"; // Tu usuario de GitHub visto en tus enlaces
+        const GITHUB_REPO = "Chamba-Express-PRO"; // El nombre exacto de tu repositorio
+
         function cargarPanelAdmin() {
             let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
             let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
             let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
             let funcionesCustom = JSON.parse(localStorage.getItem('funciones_custom')) || [];
+            let metodosPago = JSON.parse(localStorage.getItem('pagos_custom')) || [
+                { nombre: "Yape / Plin Oficial", cuenta: "912345678" },
+                { nombre: "Efectivo Diario", cuenta: "Pago directo en obra" }
+            ];
             
             document.getElementById('statAvisos').innerText = avisos.length;
             document.getElementById('statUsuarios').innerText = usuarios.length;
@@ -220,7 +241,22 @@
             document.getElementById('modCalif').checked = modulos.calif;
             document.getElementById('modUrgente').checked = modulos.urgente;
 
-            cargarCodigoArchivo();
+            cargarCodigoGitHub();
+
+            // Renderizar Métodos de Pago
+            let htmlPagos = '';
+            metodosPago.forEach((p, idx) => {
+                htmlPagos += `
+                    <div class="item-row">
+                        <div class="item-info">
+                            <h4>💳 ${p.nombre}</h4>
+                            <p>${p.cuenta}</p>
+                        </div>
+                        <button class="btn-del-mini" onclick="eliminarMetodoPago(${idx})">Eliminar</button>
+                    </div>
+                `;
+            });
+            document.getElementById('listaPagosAdmin').innerHTML = htmlPagos;
 
             // Renderizar Funciones Custom
             let htmlFunciones = '';
@@ -292,26 +328,113 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
-        // Cargar código real de cualquier archivo en el editor
-        function cargarCodigoArchivo() {
-            const archivo = document.getElementById('archivoSelect').value;
-            const key = `codigo_real_${archivo}`;
-            let codigoGuardado = localStorage.getItem(key);
+        // Descargar código real directamente desde GitHub para editar
+        async function cargarCodigoGitHub() {
+            const archivo = document.getElementById('archivoSelect').value + '.html';
+            const textarea = document.getElementById('editorCodigo');
+            textarea.value = "Descargando código desde GitHub...";
 
-            if(!codigoGuardado) {
-                // Plantillas informativas si el usuario aún no ha editado este archivo en vivo
-                codigoGuardado = `<!-- Código fuente predeterminado para ${archivo}.html -->\n<!-- Puedes modificar este bloque y darle a guardar para aplicarlo en tiempo real. -->`;
+            try {
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${archivo}`;
+                const res = await fetch(url);
+                if(res.ok) {
+                    const data = await res.json();
+                    // Decodificar Base64 de GitHub a texto legible
+                    const contenidoDecodificado = decodeURIComponent(escape(atob(data.content)));
+                    textarea.value = contenidoDecodificado;
+                } else {
+                    textarea.value = `<!-- No se pudo cargar el archivo ${archivo} desde GitHub. Puedes escribir código aquí directamente. -->`;
+                }
+            } catch (e) {
+                textarea.value = `<!-- Error de conexión al cargar ${archivo} -->`;
             }
-            document.getElementById('editorCodigo').value = codigoGuardado;
         }
 
-        function guardarCodigoReal() {
-            const archivo = document.getElementById('archivoSelect').value;
-            const codigo = document.getElementById('editorCodigo').value;
-            const key = `codigo_real_${archivo}`;
+        // Enviar cambios directo a GitHub mediante la API
+        async function guardarEnGitHubDirecto() {
+            const archivo = document.getElementById('archivoSelect').value + '.html';
+            const nuevoContenido = document.getElementById('editorCodigo').value;
 
-            localStorage.setItem(key, codigo);
-            alert(`¡El archivo ${archivo}.html ha sido actualizado y guardado correctamente en la app!`);
+            let token = localStorage.getItem('github_token');
+            if(!token) {
+                token = prompt("Ingresa tu Token Personal de GitHub (el que acabas de generar):");
+                if(!token) return;
+                localStorage.setItem('github_token', token.trim());
+            }
+
+            alert("Conectando con GitHub para actualizar el repositorio...");
+
+            try {
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${archivo}`;
+
+                // 1. Obtener el SHA actual del archivo
+                const resGet = await fetch(url, {
+                    headers: { "Authorization": `token ${token}` }
+                });
+                
+                if(!resGet.ok) {
+                    alert("Error: Token inválido o permisos insuficientes. Revisa tu token.");
+                    localStorage.removeItem('github_token');
+                    return;
+                }
+
+                const fileData = await resGet.json();
+                const shaActual = fileData.sha;
+
+                // 2. Enviar actualización PUT a GitHub
+                const resPut = await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Actualización de ${archivo} desde Panel Admin en vivo`,
+                        content: btoa(unescape(encodeURIComponent(nuevoContenido))),
+                        sha: shaActual
+                    })
+                });
+
+                if(resPut.ok) {
+                    alert(`¡Éxito total! ${archivo} se actualizó en GitHub correctamente. En unos segundos se reflejará en tu app.`);
+                } else {
+                    const err = await resPut.json();
+                    alert("Error al actualizar en GitHub: " + err.message);
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("Ocurrió un error al intentar guardar en GitHub.");
+            }
+        }
+
+        function agregarMetodoPagoMaster() {
+            const nombre = document.getElementById('nombrePagoInput').value.trim();
+            const cuenta = document.getElementById('cuentaPagoInput').value.trim();
+
+            if(!nombre || !cuenta) {
+                alert('Completa el nombre y la cuenta del método de pago.');
+                return;
+            }
+
+            let metodos = JSON.parse(localStorage.getItem('pagos_custom')) || [];
+            metodos.push({ nombre, cuenta });
+            localStorage.setItem('pagos_custom', JSON.stringify(metodos));
+
+            document.getElementById('nombrePagoInput').value = '';
+            document.getElementById('cuentaPagoInput').value = '';
+
+            alert('¡Método de pago agregado correctamente!');
+            cargarPanelAdmin();
+        }
+
+        function eliminarMetodoPago(idx) {
+            if(confirm('¿Eliminar este método de pago?')) {
+                let metodos = JSON.parse(localStorage.getItem('pagos_custom')) || [];
+                metodos.splice(idx, 1);
+                localStorage.setItem('pagos_custom', JSON.stringify(metodos));
+                cargarPanelAdmin();
+            }
         }
 
         function crearNuevaFuncionApp() {
@@ -332,7 +455,7 @@
             document.getElementById('nuevoIconoFuncion').value = '';
             document.getElementById('nuevoDescFuncion').value = '';
 
-            alert(`¡Función "${nombre}" publicada para todos los usuarios!`);
+            alert(`¡Función "${nombre}" publicada!`);
             cargarPanelAdmin();
         }
 
@@ -350,7 +473,7 @@
             if(!texto) return;
             localStorage.setItem('anuncio_global', texto);
             document.getElementById('anuncioInput').value = '';
-            alert('¡Anuncio global lanzado con éxito para todos!');
+            alert('¡Anuncio global lanzado!');
         }
 
         function guardarModulos() {
@@ -370,7 +493,7 @@
             rubros.push(nuevo);
             localStorage.setItem('rubros_custom', JSON.stringify(rubros));
             document.getElementById('nuevoRubroInput').value = '';
-            alert(`¡Rubro "${nuevo}" agregado con éxito!`);
+            alert(`¡Rubro "${nuevo}" agregado!`);
             cargarPanelAdmin();
         }
 
