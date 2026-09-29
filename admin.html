@@ -82,19 +82,43 @@
             </div>
         </div>
 
-        <!-- 1. Enviar Anuncio Global a la App -->
+        <!-- 1. CREAR NUEVAS FUNCIONES / SECCIONES CUSTOM -->
+        <div class="admin-card" style="border: 2px dashed #00ff88;">
+            <h3>🚀 Agregar Nueva Función a la App</h3>
+            <div class="form-group">
+                <label>Nombre de la Función o Sección</label>
+                <input type="text" id="nuevoNombreFuncion" class="input-box" placeholder="Ej: Préstamos Express o Bolsa de Empleo Extra">
+            </div>
+            <div class="form-group">
+                <label>Icono o Emoji representativo</label>
+                <input type="text" id="nuevoIconoFuncion" class="input-box" placeholder="Ej: 🚀 o 💳">
+            </div>
+            <div class="form-group">
+                <label>Descripción corta de la función</label>
+                <input type="text" id="nuevoDescFuncion" class="input-box" placeholder="Ej: Acceso a créditos rápidos para trabajadores">
+            </div>
+            <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Crear e Integrar Función</button>
+        </div>
+
+        <!-- Listado de Funciones Creadas -->
+        <div class="admin-card">
+            <h3>⚙️ Funciones Personalizadas Activas</h3>
+            <div id="listaFuncionesAdmin"></div>
+        </div>
+
+        <!-- 2. Publicar Anuncio Global -->
         <div class="admin-card">
             <h3>📢 Publicar Anuncio Global</h3>
             <div class="form-group">
                 <label>Mensaje o comunicado para los usuarios</label>
-                <textarea id="anuncioInput" rows="2" placeholder="Ej: ¡Atención! Nuevas ofertas de construcción disponibles este fin de semana."></textarea>
+                <textarea id="anuncioInput" rows="2" placeholder="Ej: ¡Atención! Nuevas ofertas disponibles..."></textarea>
             </div>
             <button class="btn-action" onclick="publicarAnuncioMaster()">Lanzar Anuncio en la App</button>
         </div>
 
-        <!-- 2. Activar / Desactivar Funciones Nuevas -->
+        <!-- 3. Control de Módulos Base -->
         <div class="admin-card">
-            <h3>⚡ Control de Módulos y Funciones</h3>
+            <h3>⚡ Módulos del Sistema</h3>
             <div class="toggle-row">
                 <span>💬 Activar Módulo de Chat</span>
                 <input type="checkbox" id="modChat" checked onchange="guardarModulos()">
@@ -109,7 +133,7 @@
             </div>
         </div>
 
-        <!-- 3. Crear Rubros Nuevos -->
+        <!-- 4. Agregar Nuevo Rubro -->
         <div class="admin-card">
             <h3>➕ Agregar Nuevo Rubro</h3>
             <div class="form-group">
@@ -119,19 +143,19 @@
             <button class="btn-action" onclick="agregarRubroMaster()">Añadir Rubro</button>
         </div>
 
-        <!-- 4. Moderación de Rubros Existentes -->
+        <!-- 5. Rubros Activos -->
         <div class="admin-card">
             <h3>📂 Rubros Activos</h3>
             <div id="listaRubrosAdmin"></div>
         </div>
 
-        <!-- 5. Control de Usuarios Registrados -->
+        <!-- 6. Control de Usuarios -->
         <div class="admin-card">
             <h3>👥 Usuarios Registrados en la App</h3>
             <div id="listaUsuariosAdmin" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
 
-        <!-- 6. Moderación de Avisos -->
+        <!-- 7. Moderación de Chambas -->
         <div class="admin-card">
             <h3>🗑️ Moderación de Chambas</h3>
             <div id="listaAvisosAdmin" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -157,16 +181,36 @@
             let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
             let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
             let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
+            let funcionesCustom = JSON.parse(localStorage.getItem('funciones_custom')) || [];
             
             document.getElementById('statAvisos').innerText = avisos.length;
             document.getElementById('statUsuarios').innerText = usuarios.length;
             document.getElementById('statRubros').innerText = rubros.length;
 
-            // Cargar estado de módulos
+            // Cargar estado de módulos base
             let modulos = JSON.parse(localStorage.getItem('modulos_config')) || { chat: true, calif: true, urgente: true };
             document.getElementById('modChat').checked = modulos.chat;
             document.getElementById('modCalif').checked = modulos.calif;
             document.getElementById('modUrgente').checked = modulos.urgente;
+
+            // Renderizar Funciones Custom
+            let htmlFunciones = '';
+            if(funcionesCustom.length === 0) {
+                htmlFunciones = `<p style="color:#888; font-size:12px; text-align:center;">No hay funciones adicionales creadas todavía.</p>`;
+            } else {
+                funcionesCustom.forEach((f, idx) => {
+                    htmlFunciones += `
+                        <div class="item-row">
+                            <div class="item-info">
+                                <h4>${f.icono || '⭐'} ${f.nombre}</h4>
+                                <p>${f.desc}</p>
+                            </div>
+                            <button class="btn-del-mini" onclick="eliminarFuncionCustom(${idx})">Eliminar</button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('listaFuncionesAdmin').innerHTML = htmlFunciones;
 
             // Renderizar Rubros
             let htmlRubros = '';
@@ -219,6 +263,37 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
+        function crearNuevaFuncionApp() {
+            const nombre = document.getElementById('nuevoNombreFuncion').value.trim();
+            const icono = document.getElementById('nuevoIconoFuncion').value.trim() || '⭐';
+            const desc = document.getElementById('nuevoDescFuncion').value.trim() || 'Nueva función de Chamba Express';
+
+            if(!nombre) {
+                alert('Escribe el nombre de la nueva función.');
+                return;
+            }
+
+            let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
+            funciones.push({ nombre, icono, desc });
+            localStorage.setItem('funciones_custom', JSON.stringify(funciones));
+
+            document.getElementById('nuevoNombreFuncion').value = '';
+            document.getElementById('nuevoIconoFuncion').value = '';
+            document.getElementById('nuevoDescFuncion').value = '';
+
+            alert(`¡Función "${nombre}" creada e integrada exitosamente!`);
+            cargarPanelAdmin();
+        }
+
+        function eliminarFuncionCustom(idx) {
+            if(confirm('¿Eliminar esta función de la app?')) {
+                let funciones = JSON.parse(localStorage.getItem('funciones_custom')) || [];
+                funciones.splice(idx, 1);
+                localStorage.setItem('funciones_custom', JSON.stringify(funciones));
+                cargarPanelAdmin();
+            }
+        }
+
         function publicarAnuncioMaster() {
             const texto = document.getElementById('anuncioInput').value.trim();
             if(!texto) {
@@ -227,7 +302,7 @@
             }
             localStorage.setItem('anuncio_global', texto);
             document.getElementById('anuncioInput').value = '';
-            alert('¡Anuncio lanzado con éxito en la pantalla principal de la app!');
+            alert('¡Anuncio lanzado con éxito en la pantalla principal!');
         }
 
         function guardarModulos() {
@@ -261,7 +336,7 @@
         }
 
         function eliminarUsuario(idx) {
-            if(confirm('¿Eliminar este usuario de la base de datos?')) {
+            if(confirm('¿Eliminar este usuario?')) {
                 let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
                 usuarios.splice(idx, 1);
                 localStorage.setItem('usuarios_db', JSON.stringify(usuarios));
