@@ -1,8 +1,27 @@
-<h2>Registro Trabajador</h2>
-<input id="nombre" placeholder="Nombre Completo (Obligatorio)">
-<input id="dni" placeholder="DNI">
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
+*{font-family:Arial,sans-serif;box-sizing:border-box}body{background:#0f0f0f;color:white;padding:20px}
+input,select{width:100%;padding:15px;margin:8px 0;border-radius:12px;border:1px solid #333;background:#1e1e1e;color:white;font-size:15px}
+.btn{background:white;color:black;border:none;padding:16px;width:100%;border-radius:15px;font-weight:800;font-size:16px;margin-top:15px}
+.back{color:#00ff88;text-decoration:none}
+.card{background:#1e1e1e;padding:20px;border-radius:20px;margin-top:15px;border:1px solid #333}
+</style></head><body>
+<a href="index.html" class="back">← Volver</a>
+<h2 style="margin-top:15px">Registro Trabajador</h2>
+<p style="color:#aaa;font-size:13px">Con tu nombre completo generas más confianza</p>
+<div class="card">
+<input id="nombre" placeholder="Nombre Completo * Obligatorio">
+<input id="dni" placeholder="DNI (opcional, da más confianza)">
 <select id="miRubro"><option>Construccion</option><option>Mudanza</option><option>Limpieza</option><option>Cocina</option><option>Delivery</option><option>Gamarra</option></select>
-<input id="miDistrito" placeholder="Distrito donde vives">
+<input id="miDistrito" placeholder="¿Dónde vives? Ej: SJL">
 <input id="miWhatsapp" placeholder="Tu WhatsApp">
-<button onclick="registrar()">REGISTRARME</button>
-<script src="app.js"></script>
+<button class="btn" onclick="registrar()">REGISTRARME Y VER CHAMBAS ✅</button>
+</div>
+<script>
+function registrar(){
+ if(!nombre.value){alert('Pon tu nombre completo');return;}
+ localStorage.setItem('nombre',nombre.value);
+ localStorage.setItem('whatsappTrabajador',miWhatsapp.value);
+ alert('Bienvenido '+nombre.value+' ya puedes postular'); location.href='index.html';
+}
+</script></body></html>
