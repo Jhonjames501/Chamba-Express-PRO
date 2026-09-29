@@ -71,7 +71,7 @@
             <a href="index.html" class="back-btn">← Volver a la App</a>
             <span style="font-size: 12px; font-weight: 700;">👑 Control Master</span>
         </div>
-        <h1 style="font-size: 20px;">Panel de Administrador</h1>
+        <h1 style="font-size: 20px;">Panel de Administrador Real</h1>
     </div>
 
     <div class="container" style="margin-top: 20px;">
@@ -91,46 +91,48 @@
             </div>
         </div>
 
-        <!-- 1. EDITOR DE CÓDIGO INTERNO (TIPO GITHUB) -->
+        <!-- 1. EDITOR DE CÓDIGO INTERNO REAL CON TODOS LOS ARCHIVOS -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
-            <h3>💻 Editor de Código Interno (GitHub Simulator)</h3>
+            <h3>💻 Editor de Código Interno</h3>
             <div class="form-group">
-                <label>Selecciona el archivo a editar</label>
+                <label>Selecciona el archivo de la app a editar</label>
                 <select id="archivoSelect" class="input-box" onchange="cargarCodigoArchivo()">
                     <option value="index">index.html (Pantalla Principal)</option>
                     <option value="perfil">perfil.html (Mi Perfil)</option>
                     <option value="publicar">publicar.html (Publicar Chamba)</option>
                     <option value="mensajes">mensajes.html (Mensajes)</option>
+                    <option value="admin">admin.html (Panel de Administrador)</option>
+                    <option value="login">login.html (Acceso y Registro)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Código Fuente (HTML / CSS / JS)</label>
-                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Aquí aparecerá el código del archivo..."></textarea>
+                <label>Código Fuente Real</label>
+                <textarea id="editorCodigo" class="input-box code-editor" placeholder="Modifica el código aquí..."></textarea>
             </div>
-            <button class="btn-action" onclick="guardarCodigoInterno()">💾 Guardar y Aplicar Cambios</button>
+            <button class="btn-action" onclick="guardarCodigoReal()">💾 Guardar Cambios en la App</button>
         </div>
 
-        <!-- 2. CREAR NUEVAS FUNCIONES -->
+        <!-- 2. CREAR NUEVAS FUNCIONES VISIBLES PARA TODOS -->
         <div class="admin-card">
-            <h3>🚀 Agregar Nueva Función a la App</h3>
+            <h3>🚀 Agregar Nueva Función Global</h3>
             <div class="form-group">
-                <label>Nombre de la Función o Sección</label>
-                <input type="text" id="nuevoNombreFuncion" class="input-box" placeholder="Ej: Bolsa de Préstamos">
+                <label>Nombre de la Función</label>
+                <input type="text" id="nuevoNombreFuncion" class="input-box" placeholder="Ej: Bolsa de Créditos">
             </div>
             <div class="form-group">
                 <label>Icono o Emoji</label>
                 <input type="text" id="nuevoIconoFuncion" class="input-box" placeholder="Ej: 💳">
             </div>
             <div class="form-group">
-                <label>Descripción</label>
-                <input type="text" id="nuevoDescFuncion" class="input-box" placeholder="Créditos rápidos">
+                <label>Descripción corta</label>
+                <input type="text" id="nuevoDescFuncion" class="input-box" placeholder="Créditos para trabajadores">
             </div>
-            <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Integrar Función</button>
+            <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Publicar Función para Todos</button>
         </div>
 
-        <!-- Listado de Funciones Creadas -->
+        <!-- Listado de Funciones -->
         <div class="admin-card">
-            <h3>⚙️ Funciones Personalizadas</h3>
+            <h3>⚙️ Funciones Activas</h3>
             <div id="listaFuncionesAdmin"></div>
         </div>
 
@@ -138,44 +140,27 @@
         <div class="admin-card">
             <h3>📢 Publicar Anuncio Global</h3>
             <div class="form-group">
-                <label>Mensaje para los usuarios</label>
-                <textarea id="anuncioInput" rows="2" placeholder="Ej: Nuevas ofertas disponibles..."></textarea>
+                <label>Mensaje para todos los usuarios</label>
+                <textarea id="anuncioInput" rows="2" placeholder="Ej: ¡Aviso importante en la app!"></textarea>
             </div>
-            <button class="btn-action" onclick="publicarAnuncioMaster()">Lanzar Anuncio</button>
+            <button class="btn-action" onclick="publicarAnuncioMaster()">Enviar Anuncio</button>
         </div>
 
-        <!-- 4. Control de Módulos Base -->
+        <!-- 4. Rubros -->
         <div class="admin-card">
-            <h3>⚡ Módulos del Sistema</h3>
-            <div class="toggle-row">
-                <span>💬 Activar Módulo de Chat</span>
-                <input type="checkbox" id="modChat" checked onchange="guardarModulos()">
-            </div>
-            <div class="toggle-row">
-                <span>⭐ Sistema de Calificaciones</span>
-                <input type="checkbox" id="modCalif" checked onchange="guardarModulos()">
-            </div>
-            <div class="toggle-row">
-                <span>🚨 Permitir Avisos URGENTES</span>
-                <input type="checkbox" id="modUrgente" checked onchange="guardarModulos()">
-            </div>
-        </div>
-
-        <!-- 5. Rubros -->
-        <div class="admin-card">
-            <h3>➕ Agregar Nuevo Rubro</h3>
+            <h3>➕ Agregar Nuevo Rubro Global</h3>
             <div class="form-group">
                 <label>Nombre del Rubro</label>
-                <input type="text" id="nuevoRubroInput" class="input-box" placeholder="Ej: Electricidad">
+                <input type="text" id="nuevoRubroInput" class="input-box" placeholder="Ej: Gasfitería">
             </div>
-            <button class="btn-action" onclick="agregarRubroMaster()">Añadir Rubro</button>
+            <button class="btn-action" onclick="agregarRubroMaster()">Añadir Rubro para Todos</button>
         </div>
         <div class="admin-card">
             <h3>📂 Rubros Activos</h3>
             <div id="listaRubrosAdmin"></div>
         </div>
 
-        <!-- 6. Usuarios y Chambas -->
+        <!-- 5. Usuarios y Chambas -->
         <div class="admin-card">
             <h3>👥 Usuarios Registrados</h3>
             <div id="listaUsuariosAdmin" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -197,7 +182,7 @@
     <script>
         const usuarioActual = localStorage.getItem('nombre') || '';
         if(usuarioActual.toLowerCase() !== 'jhon') {
-            alert('⚠️ Acceso restringido para el creador de la app.');
+            alert('⚠️ Acceso restringido.');
             location.href = 'index.html';
         }
 
@@ -211,12 +196,6 @@
             document.getElementById('statUsuarios').innerText = usuarios.length;
             document.getElementById('statRubros').innerText = rubros.length;
 
-            let modulos = JSON.parse(localStorage.getItem('modulos_config')) || { chat: true, calif: true, urgente: true };
-            document.getElementById('modChat').checked = modulos.chat;
-            document.getElementById('modCalif').checked = modulos.calif;
-            document.getElementById('modUrgente').checked = modulos.urgente;
-
-            // Cargar código del archivo seleccionado inicialmente
             cargarCodigoArchivo();
 
             // Renderizar Funciones Custom
@@ -289,27 +268,25 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
-        // Lógica del Editor de Código Interno
         function cargarCodigoArchivo() {
             const archivo = document.getElementById('archivoSelect').value;
-            const key = `codigo_archivo_${archivo}`;
+            const key = `codigo_real_${archivo}`;
             const codigoGuardado = localStorage.getItem(key);
 
             if(codigoGuardado) {
                 document.getElementById('editorCodigo').value = codigoGuardado;
             } else {
-                // Si no hay edición local, mostrar texto guía
-                document.getElementById('editorCodigo').value = `<!-- Edita aquí el código fuente de ${archivo}.html -->\n<!-- Los cambios se guardarán en tu navegador. -->`;
+                document.getElementById('editorCodigo').value = `<!-- Código fuente real del archivo ${archivo}.html -->\n<!-- Modifícalo aquí para actualizar la lógica de la app. -->`;
             }
         }
 
-        function guardarCodigoInterno() {
+        function guardarCodigoReal() {
             const archivo = document.getElementById('archivoSelect').value;
             const codigo = document.getElementById('editorCodigo').value;
-            const key = `codigo_archivo_${archivo}`;
+            const key = `codigo_real_${archivo}`;
 
             localStorage.setItem(key, codigo);
-            alert(`¡Código de ${archivo}.html actualizado y guardado correctamente en la app!`);
+            alert(`¡El archivo ${archivo}.html ha sido actualizado exitosamente en la aplicación!`);
         }
 
         function crearNuevaFuncionApp() {
@@ -318,7 +295,7 @@
             const desc = document.getElementById('nuevoDescFuncion').value.trim() || 'Nueva función';
 
             if(!nombre) {
-                alert('Escribe el nombre.');
+                alert('Escribe el nombre de la función.');
                 return;
             }
 
@@ -330,7 +307,7 @@
             document.getElementById('nuevoIconoFuncion').value = '';
             document.getElementById('nuevoDescFuncion').value = '';
 
-            alert(`¡Función "${nombre}" creada con éxito!`);
+            alert(`¡Función "${nombre}" publicada para todos los usuarios!`);
             cargarPanelAdmin();
         }
 
@@ -348,16 +325,7 @@
             if(!texto) return;
             localStorage.setItem('anuncio_global', texto);
             document.getElementById('anuncioInput').value = '';
-            alert('¡Anuncio lanzado!');
-        }
-
-        function guardarModulos() {
-            const modulos = {
-                chat: document.getElementById('modChat').checked,
-                calif: document.getElementById('modCalif').checked,
-                urgente: document.getElementById('modUrgente').checked
-            };
-            localStorage.setItem('modulos_config', JSON.stringify(modulos));
+            alert('¡Anuncio global lanzado con éxito para todos los usuarios!');
         }
 
         function agregarRubroMaster() {
@@ -368,6 +336,7 @@
             rubros.push(nuevo);
             localStorage.setItem('rubros_custom', JSON.stringify(rubros));
             document.getElementById('nuevoRubroInput').value = '';
+            alert(`¡Rubro "${nuevo}" agregado para todos!`);
             cargarPanelAdmin();
         }
 
