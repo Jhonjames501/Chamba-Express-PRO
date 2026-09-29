@@ -15,10 +15,18 @@
             border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
             text-align: center;
         }
+        .avatar-container {
+            position: relative; width: 90px; height: 90px; margin: 0 auto 12px;
+        }
         .avatar-box {
-            width: 80px; height: 80px; background: #000; color: #00ff88; font-size: 32px; font-weight: 800;
-            display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 12px;
-            border: 3px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            width: 100%; height: 100%; background: #000; color: #00ff88; font-size: 36px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; border-radius: 50%;
+            border: 3px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); overflow: hidden; background-size: cover; background-position: center;
+        }
+        .camera-btn {
+            position: absolute; bottom: 0; right: 0; background: #121212; color: #00ff88;
+            border: 2px solid #00ff88; width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;
         }
         .header h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
         .header p { font-size: 13px; opacity: 0.8; font-weight: 600; }
@@ -36,7 +44,6 @@
             background: #1a1a1a; border: 1px solid #333; padding: 14px; border-radius: 12px;
             text-decoration: none; color: #fff; margin-bottom: 10px; transition: 0.2s;
         }
-        .menu-link:active { background: #222; }
 
         .btn-logout {
             background: #ff4d4d; color: #fff; font-weight: 800; border: none; width: 100%; padding: 14px;
@@ -52,7 +59,15 @@
 <body>
 
     <div class="header">
-        <div class="avatar-box" id="avatarLetra">U</div>
+        <div class="avatar-container">
+            <div class="avatar-box" id="avatarBox">
+                <span id="avatarLetra">U</span>
+            </div>
+            <label class="camera-btn" title="Cambiar foto">
+                📷
+                <input type="file" id="inputFoto" accept="image/*" style="display: none;" onchange="cambiarFotoPerfil(event)">
+            </label>
+        </div>
         <h2 id="nombreUsuario">Cargando...</h2>
         <p id="rolUsuario">Trabajador / Empleador</p>
     </div>
@@ -68,7 +83,7 @@
             </div>
         </div>
 
-        <!-- ACCESO AL PANEL DE ADMIN (Solo si es Jhon) -->
+        <!-- ACCESO AL PANEL DE ADMIN -->
         <div id="seccionAdmin" style="display: none;">
             <a href="admin.html" class="menu-link" style="border: 2px solid #00ff88; background: #15291f;">
                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -82,7 +97,7 @@
             </a>
         </div>
 
-        <!-- CENTRO DE RECLAMOS Y SOPORTE (NUEVO) -->
+        <!-- CENTRO DE RECLAMOS Y SOPORTE -->
         <a href="reclamos.html" class="menu-link" style="border: 1px solid #ff4d4d33;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 18px;">🛡️</span>
@@ -122,14 +137,37 @@
         const telefono = localStorage.getItem('telefono') || 'No registrado';
         const distrito = localStorage.getItem('distrito') || 'Lima';
         const rol = localStorage.getItem('rol') || 'Usuario General';
+        const fotoGuardada = localStorage.getItem('foto_perfil');
 
         document.getElementById('nombreUsuario').innerText = nombre;
         document.getElementById('telUsuario').innerText = telefono;
         document.getElementById('distritoUsuario').innerText = distrito;
         document.getElementById('rolUsuario').innerText = rol;
-        document.getElementById('avatarLetra').innerText = nombre.charAt(0).toUpperCase();
 
-        // Mostrar enlace de admin si el usuario es Jhon
+        if (fotoGuardada) {
+            const avatarBox = document.getElementById('avatarBox');
+            avatarBox.style.backgroundImage = `url(${fotoGuardada})`;
+            document.getElementById('avatarLetra').style.display = 'none';
+        } else {
+            document.getElementById('avatarLetra').innerText = nombre.charAt(0).toUpperCase();
+        }
+
+        function cambiarFotoPerfil(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    localStorage.setItem('foto_perfil', base64Image);
+                    const avatarBox = document.getElementById('avatarBox');
+                    avatarBox.style.backgroundImage = `url(${base64Image})`;
+                    document.getElementById('avatarLetra').style.display = 'none';
+                    alert('¡Foto de perfil actualizada con éxito!');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         if(nombre.toLowerCase() === 'jhon') {
             document.getElementById('seccionAdmin').style.display = 'block';
         }
