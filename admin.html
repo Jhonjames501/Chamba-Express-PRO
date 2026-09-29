@@ -95,7 +95,7 @@
         <div class="admin-card" style="border: 2px dashed #00ff88;">
             <h3>📄 Crear un Nuevo Archivo en la App</h3>
             <div class="form-group">
-                <label>Nombre del Archivo (Ej: calculadora.html o reclamos.html)</label>
+                <label>Nombre del Archivo (Ej: calculadora.html)</label>
                 <input type="text" id="nuevoNombreArchivo" class="input-box" placeholder="nombre.html">
             </div>
             <div class="form-group">
@@ -111,13 +111,7 @@
             <div class="form-group">
                 <label>Selecciona el archivo a editar</label>
                 <select id="archivoSelect" class="input-box" onchange="cargarCodigoGitHub()">
-                    <option value="index">index.html (Pantalla Principal)</option>
-                    <option value="perfil">perfil.html (Mi Perfil)</option>
-                    <option value="publicar">publicar.html (Publicar Chamba)</option>
-                    <option value="mensajes">mensajes.html (Mensajes)</option>
-                    <option value="admin">admin.html (Panel Admin)</option>
-                    <option value="login">login.html (Acceso)</option>
-                    <option value="reclamos">reclamos.html (Centro de Reclamos)</option>
+                    <!-- Se llena dinámicamente con todos tus archivos HTML -->
                 </select>
             </div>
             <div class="form-group">
@@ -236,7 +230,9 @@
         const GITHUB_USER = "Jhonjames501";
         const GITHUB_REPO = "Chamba-Express-PRO";
 
-        function cargarPanelAdmin() {
+        async function cargarPanelAdmin() {
+            await listarArchivosGitHub();
+
             let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
             let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
             let rubros = JSON.parse(localStorage.getItem('rubros_custom')) || ['Construcción', 'Mudanzas', 'Limpieza', 'Cocina', 'Delivery', 'Gamarra'];
@@ -254,8 +250,6 @@
             document.getElementById('modChat').checked = modulos.chat;
             document.getElementById('modCalif').checked = modulos.calif;
             document.getElementById('modUrgente').checked = modulos.urgente;
-
-            cargarCodigoGitHub();
 
             let htmlPagos = '';
             metodosPago.forEach((p, idx) => {
@@ -337,6 +331,30 @@
             document.getElementById('listaAvisosAdmin').innerHTML = htmlAvisos;
         }
 
+        // Listar automáticamente TODOS los archivos .html directamente desde GitHub
+        async function listarArchivosGitHub() {
+            const select = document.getElementById('archivoSelect');
+            try {
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/`;
+                const res = await fetch(url);
+                if(res.ok) {
+                    const files = await res.json();
+                    select.innerHTML = '';
+                    files.forEach(file => {
+                        if(file.name.endsWith('.html')) {
+                            const option = document.createElement('option');
+                            option.value = file.name.replace('.html', '');
+                            option.textContent = file.name;
+                            select.appendChild(option);
+                        }
+                    });
+                    cargarCodigoGitHub();
+                }
+            } catch (e) {
+                console.error("Error al listar archivos de GitHub", e);
+            }
+        }
+
         async function crearNuevoArchivoGitHub() {
             let nombreArchivo = document.getElementById('nuevoNombreArchivo').value.trim();
             const contenido = document.getElementById('nuevoCodigoArchivo').value;
@@ -375,10 +393,10 @@
                 });
 
                 if(resPut.ok) {
-                    alert(`¡Archivo ${nombreArchivo} creado con éxito en GitHub!`);
+                    alert(`¡Archivo ${nombreArchivo} creado con éxito en GitHub! Ya aparece en tu lista.`);
                     document.getElementById('nuevoNombreArchivo').value = '';
                     document.getElementById('nuevoCodigoArchivo').value = '';
-                    location.reload();
+                    cargarPanelAdmin(); // Actualizar selector al instante
                 } else {
                     const err = await resPut.json();
                     alert("Error al crear archivo: " + err.message);
@@ -390,7 +408,9 @@
         }
 
         async function cargarCodigoGitHub() {
-            const archivo = document.getElementById('archivoSelect').value + '.html';
+            const archivoSelect = document.getElementById('archivoSelect').value;
+            if(!archivoSelect) return;
+            const archivo = archivoSelect + '.html';
             const textarea = document.getElementById('editorCodigo');
             textarea.value = "Descargando código desde GitHub...";
 
@@ -402,7 +422,7 @@
                     const contenidoDecodificado = decodeURIComponent(escape(atob(data.content)));
                     textarea.value = contenidoDecodificado;
                 } else {
-                    textarea.value = `<!-- El archivo ${archivo} aún no existe o no tiene contenido en GitHub. Puedes crearlo arriba. -->`;
+                    textarea.value = `<!-- El archivo ${archivo} no se pudo cargar. -->`;
                 }
             } catch (e) {
                 textarea.value = `<!-- Error de conexión al cargar ${archivo} -->`;
@@ -417,7 +437,8 @@
                 localStorage.setItem('github_token', token.trim());
             }
 
-            const archivo = document.getElementById('archivoSelect').value + '.html';
+            const archivoSelect = document.getElementById('archivoSelect').value;
+            const archivo = archivoSelect + '.html';
             const nuevoContenido = document.getElementById('editorCodigo').value;
 
             alert("Conectando con GitHub para actualizar el repositorio...");
