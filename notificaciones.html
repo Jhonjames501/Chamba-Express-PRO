@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - Chamba Express</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding-bottom: 90px; }
+        
+        .header {
+            background: linear-gradient(135deg, #00b064 0%, #00ff88 100%);
+            color: #000; padding: 20px;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(0,0,0,0.15); border: none; color: #000; font-weight: 600; padding: 6px 12px; border-radius: 10px; text-decoration: none; font-size: 13px; }
+        
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        
+        .notif-card {
+            background: #181818; border: 1px solid #333; border-radius: 16px; padding: 16px; margin-bottom: 12px;
+            display: flex; gap: 14px; align-items: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .notif-icon {
+            font-size: 24px; background: #222; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid #444; flex-shrink: 0;
+        }
+        .notif-content h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .notif-content p { font-size: 12px; color: #bbb; line-height: 1.4; margin-bottom: 6px; }
+        .notif-date { font-size: 10px; color: #888; font-weight: 600; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00ff88; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-top">
+            <a href="index.html" class="back-btn">← Volver a la App</a>
+            <span style="font-size: 12px; font-weight: 700;">🔔 Centro de Alertas</span>
+        </div>
+        <h1 style="font-size: 20px;">Mis Notificaciones</h1>
+    </div>
+
+    <div class="container" style="margin-top: 20px;">
+        <div id="listaNotificaciones">
+            <!-- Las notificaciones se cargan aquí dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Buscar</a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Postulaciones</a>
+        <a href="mensajes.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>Mensajes</a>
+        <a href="perfil.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil</a>
+    </nav>
+
+    <script>
+        function cargarNotificaciones() {
+            let contenedor = document.getElementById('listaNotificaciones');
+            let anuncioGlobal = localStorage.getItem('anuncio_global');
+            
+            let html = '';
+
+            if (anuncioGlobal) {
+                html += `
+                    <div class="notif-card" style="border-left: 4px solid #00ff88;">
+                        <div class="notif-icon">📢</div>
+                        <div class="notif-content">
+                            <h4>Aviso del Administrador</h4>
+                            <p>${anuncioGlobal}</p>
+                            <span class="notif-date">Destacado Global</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="notif-card">
+                    <div class="notif-icon">🎉</div>
+                    <div class="notif-content">
+                        <h4>¡Bienvenido a Chamba Express Pro!</h4>
+                        <p>Tu plataforma de empleos y servicios en Lima Norte está activa y funcionando al 100%.</p>
+                        <span class="notif-date">Hace un momento</span>
+                    </div>
+                </div>
+                <div class="notif-card">
+                    <div class="notif-icon">🛡️</div>
+                    <div class="notif-content">
+                        <h4>Consejo de Seguridad</h4>
+                        <p>Recuerda verificar siempre los detalles de las ofertas y usar nuestro Centro de Reclamos ante cualquier duda.</p>
+                        <span class="notif-date">Sistema</span>
+                    </div>
+                </div>
+            `;
+
+            contenedor.innerHTML = html;
+        }
+
+        cargarNotificaciones();
+    </script>
+</body>
+</html>
