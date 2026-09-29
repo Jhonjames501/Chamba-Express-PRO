@@ -23,9 +23,10 @@ body{background:#0f0f0f;color:white;padding-bottom:90px}
 .card{background:#1e1e1e;border:1.5px solid #00ff88;border-radius:18px;padding:15px;margin-bottom:12px;position:relative}
 .badge{background:#b6ff6e;color:black;font-size:11px;font-weight:800;padding:4px 8px;border-radius:6px;display:inline-block;margin-bottom:6px}
 .card h3{font-size:17px;margin-bottom:4px}
-.card small{color:#aaa}
+.card small{color:#aaa;display:block;margin-bottom:2px}
 .price{color:#00ff88;font-weight:800;font-size:20px;margin-top:8px}
-.wa-btn{background:#00ff88;color:black;border:none;padding:10px 20px;border-radius:12px;font-weight:800;float:right;margin-top:-30px}
+.wa-btn{background:#00ff88;color:black;border:none;padding:10px 20px;border-radius:12px;font-weight:800;float:right;margin-top:-30px;cursor:pointer}
+.link-perfil{color:#00ff88;font-size:12px;text-decoration:none;font-weight:600}
 .btn-main{display:block;background:#00ff88;color:black;text-align:center;padding:16px;border-radius:15px;font-weight:800;text-decoration:none;margin:10px 15px}
 .btn-sec{display:block;background:black;border:1.5px solid #333;color:white;text-align:center;padding:14px;border-radius:15px;text-decoration:none;margin:0 15px}
 .nav{position:fixed;bottom:10px;left:10px;right:10px;background:#1a1a1a;border-radius:25px;display:flex;justify-content:space-around;padding:12px 0;border:1px solid #333}
@@ -48,17 +49,17 @@ body{background:#0f0f0f;color:white;padding-bottom:90px}
 </div>
 
 <div class="rubros">
-<button class="active" onclick="filtrarRubro('Todos')">Todos</button>
-<button onclick="filtrarRubro('Construccion')">🏗️ Construcción</button>
-<button onclick="filtrarRubro('Mudanza')">🚚 Mudanzas</button>
-<button onclick="filtrarRubro('Limpieza')">✨ Limpieza</button>
-<button onclick="filtrarRubro('Cocina')">👨‍🍳 Cocina</button>
-<button onclick="filtrarRubro('Delivery')">🛵 Delivery</button>
-<button onclick="filtrarRubro('Gamarra')">👕 Gamarra</button>
+<button class="active" onclick="filtrarRubro('Todos',event)">Todos</button>
+<button onclick="filtrarRubro('Construccion',event)">🏗️ Construcción</button>
+<button onclick="filtrarRubro('Mudanza',event)">🚚 Mudanzas</button>
+<button onclick="filtrarRubro('Limpieza',event)">✨ Limpieza</button>
+<button onclick="filtrarRubro('Cocina',event)">👨‍🍳 Cocina</button>
+<button onclick="filtrarRubro('Delivery',event)">🛵 Delivery</button>
+<button onclick="filtrarRubro('Gamarra',event)">👕 Gamarra</button>
 </div>
 
 <div class="section">
-<div style="display:flex;justify-content:space-between"><h3>Chambas destacadas hoy</h3><span style="color:#00ff88">Ver todo (24)</span></div>
+<div style="display:flex;justify-content:space-between"><h3>Chambas destacadas hoy</h3><span style="color:#00ff88" id="contador">Ver todo (0)</span></div>
 <div id="avisos" style="margin-top:15px"></div>
 </div>
 
@@ -66,10 +67,11 @@ body{background:#0f0f0f;color:white;padding-bottom:90px}
 <a href="registro.html" class="btn-sec">REGISTRARME COMO TRABAJADOR</a>
 
 <div class="nav">
-<div class="active">🏠<br>Buscar</div><div>📋<br>Postulaciones</div><div>💬<br>Mensajes</div><div>👤<br>Perfil</div>
+<div class="active">🏠<br>Buscar</div><div>📋<br>Postulaciones</div><div>💬<br>Mensajes</div><div onclick="location.href='perfil.html'">👤<br>Perfil</div>
 </div>
 
 <script>
+// DATOS
 let avisos = JSON.parse(localStorage.getItem('avisos')||'[]');
 if(avisos.length==0){
  avisos=[
@@ -77,27 +79,50 @@ if(avisos.length==0){
   {rubro:'Mudanza',titulo:'Mudanza apto 2 dorm - ayudante',distrito:'Miraflores, Lima • Hoy 14:00',pago:'S/ 80 /hora',whatsapp:'999999999',tag:'NUEVO'},
   {rubro:'Limpieza',titulo:'Limpieza de casa - 4 horas',distrito:'Surco, Lima • Mañana 9am',pago:'S/ 60',whatsapp:'999999999',tag:'NUEVO'}
  ];
+ localStorage.setItem('avisos',JSON.stringify(avisos));
 }
+
+// FUNCION ACTUALIZADA CON CALIFICACION
+function obtenerRatingTrabajador(){
+ let nombre = localStorage.getItem('nombre') || 'Trabajador Ejemplo';
+ let califs = JSON.parse(localStorage.getItem('califs_'+nombre) || '[]');
+ let prom = califs.length ? (califs.reduce((s,b)=>s+parseInt(b.estrellas),0)/califs.length).toFixed(1) : '5.0';
+ return {nombre, prom, total: califs.length};
+}
+
 function mostrar(lista){
+ document.getElementById('contador').innerText = `Ver todo (${lista.length})`;
+ let rating = obtenerRatingTrabajador();
  document.getElementById('avisos').innerHTML=lista.map(a=>`
  <div class="card">
   <span class="badge">${a.tag||'NUEVO'}</span>
   <h3>${a.titulo}</h3>
   <small>📍 ${a.distrito}</small>
-  <div class="price">${a.pago}</div>
-  <a href="https://wa.me/51${a.whatsapp}?text=Hola, soy ${localStorage.getItem('nombre')||'trabajador'} vi tu chamba de ${a.titulo} en Chamba Express" target="_blank"><button class="wa-btn">WhatsApp</button></a>
+  <small>⭐ ${rating.prom} (${rating.total} califs) • ${rating.nombre}</small>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+   <div class="price">${a.pago}</div>
+   <div>
+    <a href="perfil.html?trabajador=${encodeURIComponent(rating.nombre)}" class="link-perfil">Ver perfil ⭐</a>
+   </div>
+  </div>
+  <a href="https://wa.me/51${a.whatsapp}?text=Hola, soy ${rating.nombre} ⭐${rating.prom} vi tu chamba de ${a.titulo} en Chamba Express" target="_blank"><button class="wa-btn">WhatsApp</button></a>
+  <div style="clear:both"></div>
  </div>
- `).join('');
+ `).join('') || '<p style="color:#666;text-align:center;margin-top:20px">No hay chambas en este rubro</p>';
 }
+
 function filtrar(){
  let t=document.getElementById('buscador').value.toLowerCase();
- mostrar(avisos.filter(a=>(a.titulo+a.distrito+a.rubro).toLowerCase().includes(t)));
+ mostrar(avisos.filter(a=>(a.titulo+a.distrito+a.rubro+a.pago).toLowerCase().includes(t)));
 }
-function filtrarRubro(r){
+
+function filtrarRubro(r, e){
  document.querySelectorAll('.rubros button').forEach(b=>b.classList.remove('active'));
- event.target.classList.add('active');
+ if(e) e.target.classList.add('active');
  if(r=='Todos') mostrar(avisos); else mostrar(avisos.filter(a=>a.rubro==r));
 }
+
+// INICIO
 mostrar(avisos);
 </script>
 </body>
