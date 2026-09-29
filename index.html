@@ -36,19 +36,15 @@ body{background:#0f0f0f;color:white;padding-bottom:90px}
 </head>
 <body>
 <script>if(!localStorage.getItem('rol')){location.href='login.html';}</script>
-
 <div class="header">
 <div class="top">
-<div class="logo"><div class="logo-icon">💼</div><div><h1>Chamba<br>Express</h1><p id="rolInfo">📍 Lima • Perú</p></div></div>
+<div class="logo"><div class="logo-icon">💼</div><div><h1>Chamba<br>Express</h1><p id="infoRol">📍 Lima • Perú</p></div></div>
 <div style="font-size:24px">🔔 👤</div>
 </div>
-<h2 style="color:black;margin-top:15px;font-size:26px;" id="tituloMain">Encuentra chambas diarias</h2>
-<p style="color:#003a1f;font-weight:600" id="subMain">Trabajos por día, cerca de ti • Pago en S/</p>
-<div class="search-box">
-<span>🔍</span><input id="buscador" placeholder="Busca: limpieza, delivery, construcción..." onkeyup="filtrar()">
+<h2 style="color:black;margin-top:15px;font-size:26px;">Encuentra chambas diarias</h2>
+<p style="color:#003a1f;font-weight:600" id="infoSub">Trabajos por día, cerca de ti • Pago en S/</p>
+<div class="search-box"><span>🔍</span><input id="buscador" placeholder="Busca: limpieza, delivery, construcción..." onkeyup="filtrar()"></div>
 </div>
-</div>
-
 <div class="rubros">
 <button class="active" onclick="filtrarRubro('Todos',event)">Todos</button>
 <button onclick="filtrarRubro('Construccion',event)">🏗️ Construcción</button>
@@ -58,53 +54,63 @@ body{background:#0f0f0f;color:white;padding-bottom:90px}
 <button onclick="filtrarRubro('Delivery',event)">🛵 Delivery</button>
 <button onclick="filtrarRubro('Gamarra',event)">👕 Gamarra</button>
 </div>
-
 <div class="section">
 <div style="display:flex;justify-content:space-between"><h3>Chambas destacadas hoy</h3><span style="color:#00ff88" id="contador">Ver todo (0)</span></div>
 <div id="avisos" style="margin-top:15px"></div>
 </div>
-
-<div id="boxEmpleador" style="display:none">
-<a href="publicar.html" class="btn-main">+ PUBLICAR CHAMBA (Empleador)</a>
-<p style="text-align:center;color:#666;font-size:12px">Estás como empleador • Puedes calificar</p>
-</div>
-
-<div id="boxTrabajador" style="display:none">
-<a href="perfil.html" class="btn-sec">REGISTRARME COMO TRABAJADOR - VER MI PERFIL ⭐</a>
-</div>
-
-<a href="#" onclick="if(confirm('¿Salir y cambiar de rol?')){localStorage.clear();location.href='login.html';}" style="display:block;text-align:center;color:#555;margin-top:15px;font-size:12px">Cambiar de rol / Salir</a>
-
-<div class="nav">
-<div class="active">🏠<br>Buscar</div><div>📋<br>Postulaciones</div><div>💬<br>Mensajes</div><div onclick="location.href='perfil.html'">👤<br>Perfil</div>
-</div>
-
+<div id="zonaE" style="display:none"><a href="publicar.html" class="btn-main">+ PUBLICAR CHAMBA (Empleador)</a></div>
+<div id="zonaT" style="display:none"><a href="perfil.html" class="btn-sec">REGISTRARME COMO TRABAJADOR - VER PERFIL ⭐</a></div>
+<a href="#" onclick="if(confirm('Cambiar rol?')){localStorage.clear();location.href='login.html';}" style="display:block;text-align:center;color:#555;margin-top:15px;font-size:12px">Cambiar rol / Salir</a>
+<div class="nav"><div class="active">🏠<br>Buscar</div><div>📋<br>Postulaciones</div><div>💬<br>Mensajes</div><div onclick="location.href='perfil.html'">👤<br>Perfil</div></div>
 <script>
-let avisos = JSON.parse(localStorage.getItem('avisos')||'[]');
+let avisos=JSON.parse(localStorage.getItem('avisos')||'[]');
 if(avisos.length==0){
- avisos=[
-  {rubro:'Construccion',titulo:'Maestro de obra - remodelación',distrito:'San Miguel, Lima • Hoy',pago:'S/ 120 /día',whatsapp:'999999999',tag:'URGENTE'},
-  {rubro:'Mudanza',titulo:'Mudanza apto 2 dorm - ayudante',distrito:'Miraflores, Lima • Hoy 14:00',pago:'S/ 80 /hora',whatsapp:'999999999',tag:'NUEVO'},
-  {rubro:'Limpieza',titulo:'Limpieza de casa - 4 horas',distrito:'Surco, Lima • Mañana 9am',pago:'S/ 60',whatsapp:'999999999',tag:'NUEVO'}
- ];
- localStorage.setItem('avisos',JSON.stringify(avisos));
+avisos=[
+{rubro:'Construccion',titulo:'Maestro de obra - remodelación',distrito:'San Miguel, Lima • Hoy',pago:'S/ 120 /día',whatsapp:'999999999',tag:'URGENTE'},
+{rubro:'Mudanza',titulo:'Mudanza apto 2 dorm - ayudante',distrito:'Miraflores, Lima • Hoy 14:00',pago:'S/ 80 /hora',whatsapp:'999999999',tag:'NUEVO'},
+{rubro:'Limpieza',titulo:'Limpieza de casa - 4 horas',distrito:'Surco, Lima • Mañana 9am',pago:'S/ 60',whatsapp:'999999999',tag:'NUEVO'}
+];
+localStorage.setItem('avisos',JSON.stringify(avisos));
 }
 function obtenerRatingTrabajador(){
- let nombre = localStorage.getItem('nombre') || 'Trabajador Ejemplo';
- let califs = JSON.parse(localStorage.getItem('califs_'+nombre) || '[]');
- let prom = califs.length ? (califs.reduce((s,b)=>s+parseInt(b.estrellas),0)/califs.length).toFixed(1) : '5.0';
- return {nombre, prom, total: califs.length};
+let nombre=localStorage.getItem('nombre')||'Trabajador Ejemplo';
+let califs=JSON.parse(localStorage.getItem('califs_'+nombre)||'[]');
+let prom=califs.length?(califs.reduce((s,b)=>s+parseInt(b.estrellas),0)/califs.length).toFixed(1):'5.0';
+return{nombre,prom,total:califs.length};
 }
-let nombreUser = localStorage.getItem('nombre')||'Usuario';
-let rolUser = localStorage.getItem('rol')||'trabajador';
-document.getElementById('rolInfo').innerText = nombreUser + ' • ' + (rolUser=='empleador' ? '🏢 Empleador' : '🙋‍♂️ Trabajador');
-document.getElementById('subMain').innerText = rolUser=='empleador' ? 'Publica chambas y califica comportamiento' : 'Trabajos por día, cerca de ti • Cuida tu ⭐';
-if(rolUser=='empleador'){document.getElementById('boxEmpleador').style.display='block';}else{document.getElementById('boxTrabajador').style.display='block';}
-
+let nombreUser=localStorage.getItem('nombre')||'Usuario';
+let rolUser=localStorage.getItem('rol')||'trabajador';
+document.getElementById('infoRol').innerText=nombreUser+' • '+(rolUser=='empleador'?'🏢 Empleador':'🙋‍♂️ Trabajador');
+document.getElementById('infoSub').innerText=rolUser=='empleador'?'Publica y califica trabajadores':'Trabajos cerca de ti • Cuida tu calificacion ⭐';
+if(rolUser=='empleador'){document.getElementById('zonaE').style.display='block';}else{document.getElementById('zonaT').style.display='block';}
 function mostrar(lista){
- document.getElementById('contador').innerText = `Ver todo (${lista.length})`;
- let rating = obtenerRatingTrabajador();
- document.getElementById('avisos').innerHTML=lista.map(a=>`
- <div class="card">
-  <span class="badge">${a.tag||'NUEVO'}</span>
-  <h3>${a.t
+document.getElementById('contador').innerText=`Ver todo (${lista.length})`;
+let rating=obtenerRatingTrabajador();
+document.getElementById('avisos').innerHTML=lista.map(a=>`
+<div class="card">
+<span class="badge">${a.tag||'NUEVO'}</span>
+<h3>${a.titulo}</h3>
+<small>📍 ${a.distrito}</small>
+<small>⭐ ${rating.prom} (${rating.total} califs) • ${rating.nombre}</small>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+<div class="price">${a.pago}</div>
+<div><a href="perfil.html?trabajador=${encodeURIComponent(rating.nombre)}" class="link-perfil">Ver perfil ⭐</a></div>
+</div>
+${rolUser=='trabajador'?`<a href="https://wa.me/51${a.whatsapp}?text=Hola, soy ${rating.nombre} ⭐${rating.prom} vi tu chamba de ${a.titulo} en Chamba Express" target="_blank"><button class="wa-btn">WhatsApp</button></a>`:''}
+<div style="clear:both"></div>
+</div>
+`).join('')||'<p style="color:#666;text-align:center;margin-top:20px">No hay chambas en este rubro</p>';
+}
+function filtrar(){
+let t=document.getElementById('buscador').value.toLowerCase();
+mostrar(avisos.filter(a=>(a.titulo+a.distrito+a.rubro+a.pago).toLowerCase().includes(t)));
+}
+function filtrarRubro(r,e){
+document.querySelectorAll('.rubros button').forEach(b=>b.classList.remove('active'));
+if(e) e.target.classList.add('active');
+if(r=='Todos') mostrar(avisos); else mostrar(avisos.filter(a=>a.rubro==r));
+}
+mostrar(avisos);
+</script>
+</body>
+</html>
