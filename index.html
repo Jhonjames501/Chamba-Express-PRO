@@ -541,7 +541,16 @@
 
         // Ejecutar al iniciar
         cargarRubrosDinamicos();
-        renderizarAvisos();
+        renderizarAvisos();        const usuarioActual = localStorage.getItem('nombre') || '';
+        const adminMaster = JSON.parse(localStorage.getItem('admin_master_config')) || { nombre: 'Jhon', pass: '1234' };
+
+        if (usuarioActual.toLowerCase().trim() === adminMaster.nombre.toLowerCase().trim()) {
+            const btnAdmin = document.getElementById('linkAdminSidebar');
+            if (btnAdmin) {
+                btnAdmin.style.display = 'block';
+            }
+        }
+
     </script>
 </body>
 </html>
