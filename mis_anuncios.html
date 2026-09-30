@@ -101,14 +101,23 @@
 
         function cargarMisAnuncios() {
             let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
-            // Filtramos los avisos que pertenecen al usuario logueado actual
-            let misAvisos = avisos.filter(a => a.autor && a.autor.toLowerCase() === usuarioActual.toLowerCase());
+            
+            // Filtramos por autor exacto o por coincidencia si el nombre está en las tarjetas de la app principal
+            let misAvisos = avisos.filter(a => {
+                if(!a.autor) return false;
+                return a.autor.toLowerCase().trim() === usuarioActual.toLowerCase().trim();
+            });
             
             let contenedor = document.getElementById('listaMisAnuncios');
             let html = '';
 
             if (misAvisos.length === 0) {
-                html = '<p style="color:#888; font-size:13px; text-align:center; margin-top:40px;">No has publicado ningún anuncio todavía.</p>';
+                html = `
+                    <div style="text-align:center; padding: 30px 0;">
+                        <p style="color:#888; font-size:13px; margin-bottom:10px;">No se encontraron anuncios creados por "${usuarioActual}".</p>
+                        <p style="color:#aaa; font-size:11px;">Nota: Los anuncios creados previamente sin tu nombre de usuario exacto se pueden ver desde el Panel Admin.</p>
+                    </div>
+                `;
             } else {
                 misAvisos.forEach(a => {
                     html += `
