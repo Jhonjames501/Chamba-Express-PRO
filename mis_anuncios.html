@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Anuncios - Chamba Express</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #121212; color: #ffffff; padding-bottom: 90px; }
+        
+        .header {
+            background: linear-gradient(135deg, #00b064 0%, #00ff88 100%);
+            color: #000; padding: 20px;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .back-btn { background: rgba(0,0,0,0.15); border: none; color: #000; font-weight: 600; padding: 6px 12px; border-radius: 10px; text-decoration: none; font-size: 13px; }
+        
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        
+        .chamba-card {
+            background: #181818; border: 1px solid #333; border-radius: 16px; padding: 16px; margin-bottom: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .chamba-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .chamba-info { font-size: 12px; color: #bbb; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
+        
+        .btn-group { display: flex; gap: 8px; }
+        .btn-edit { background: #333; color: #00ff88; border: 1px solid #00ff88; font-weight: 700; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; flex: 1; }
+        .btn-delete { background: #ff4d4d; color: #fff; font-weight: 700; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; flex: 1; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            justify-content: center; align-items: center; padding: 20px; z-index: 200;
+        }
+        .modal-content { background: #181818; border: 1px solid #00ff88; border-radius: 16px; padding: 20px; width: 100%; max-width: 450px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; color: #b6ff6e; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+        .input-box, textarea {
+            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-size: 13px; outline: none;
+        }
+        .btn-action { background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #00ff88; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-top">
+            <a href="perfil.html" class="back-btn">← Volver al Perfil</a>
+            <span style="font-size: 12px; font-weight: 700;">📂 Mis Anuncios</span>
+        </div>
+        <h1 style="font-size: 20px;">Gestionar Mis Chambas</h1>
+    </div>
+
+    <div class="container" style="margin-top: 20px;">
+        <div id="listaMisAnuncios"></div>
+    </div>
+
+    <!-- Modal para Editar Anuncio -->
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <h3 style="color: #00ff88; font-size: 16px; margin-bottom: 12px;">✏️ Editar Anuncio</h3>
+            <input type="hidden" id="editId">
+            <div class="form-group">
+                <label>Título del Puesto</label>
+                <input type="text" id="editTitulo" class="input-box">
+            </div>
+            <div class="form-group">
+                <label>Distrito</label>
+                <input type="text" id="editDistrito" class="input-box">
+            </div>
+            <div class="form-group">
+                <label>Pago / Jornal</label>
+                <input type="text" id="editPago" class="input-box">
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="editDesc" rows="3" class="input-box"></textarea>
+            </div>
+            <button class="btn-action" onclick="guardarEdicionAnuncio()">Guardar Cambios</button>
+            <button onclick="cerrarModal()" style="background: #333; color: #fff; border: none; width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Buscar</a>
+        <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Postulaciones</a>
+        <a href="mensajes.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>Mensajes</a>
+        <a href="perfil.html" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil</a>
+    </nav>
+
+    <script>
+        const usuarioActual = localStorage.getItem('nombre') || '';
+
+        function cargarMisAnuncios() {
+            let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+            // Filtramos los avisos que pertenecen al usuario logueado actual
+            let misAvisos = avisos.filter(a => a.autor && a.autor.toLowerCase() === usuarioActual.toLowerCase());
+            
+            let contenedor = document.getElementById('listaMisAnuncios');
+            let html = '';
+
+            if (misAvisos.length === 0) {
+                html = '<p style="color:#888; font-size:13px; text-align:center; margin-top:40px;">No has publicado ningún anuncio todavía.</p>';
+            } else {
+                misAvisos.forEach(a => {
+                    html += `
+                        <div class="chamba-card">
+                            <div class="chamba-title">${a.titulo}</div>
+                            <div class="chamba-info">
+                                <span>📍 Distrito: ${a.distrito}</span>
+                                <span>💰 Pago: ${a.pago}</span>
+                                <span>📝 ${a.desc || 'Sin descripción'}</span>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn-edit" onclick="abrirEditar(${a.id})">✏️ Editar</button>
+                                <button class="btn-delete" onclick="eliminarAnuncio(${a.id})">🗑️ Borrar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            contenedor.innerHTML = html;
+        }
+
+        function eliminarAnuncio(id) {
+            if(confirm('¿Estás seguro de eliminar este anuncio permanentemente?')) {
+                let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+                avisos = avisos.filter(a => a.id !== id);
+                localStorage.setItem('avisos', JSON.stringify(avisos));
+                cargarMisAnuncios();
+            }
+        }
+
+        function abrirEditar(id) {
+            let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+            let aviso = avisos.find(a => a.id === id);
+            if(aviso) {
+                document.getElementById('editId').value = aviso.id;
+                document.getElementById('editTitulo').value = aviso.titulo;
+                document.getElementById('editDistrito').value = aviso.distrito;
+                document.getElementById('editPago').value = aviso.pago;
+                document.getElementById('editDesc').value = aviso.desc || '';
+                document.getElementById('modalEditar').style.display = 'flex';
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalEditar').style.display = 'none';
+        }
+
+        function guardarEdicionAnuncio() {
+            let id = Number(document.getElementById('editId').value);
+            let nuevoTitulo = document.getElementById('editTitulo').value.trim();
+            let nuevoDistrito = document.getElementById('editDistrito').value.trim();
+            let nuevoPago = document.getElementById('editPago').value.trim();
+            let nuevaDesc = document.getElementById('editDesc').value.trim();
+
+            if(!nuevoTitulo || !nuevoDistrito) {
+                alert('El título y el distrito son obligatorios.');
+                return;
+            }
+
+            let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
+            let index = avisos.findIndex(a => a.id === id);
+
+            if(index !== -1) {
+                avisos[index].titulo = nuevoTitulo;
+                avisos[index].distrito = nuevoDistrito;
+                avisos[index].pago = nuevoPago;
+                avisos[index].desc = nuevaDesc;
+
+                localStorage.setItem('avisos', JSON.stringify(avisos));
+                cerrarModal();
+                alert('¡Anuncio actualizado con éxito!');
+                cargarMisAnuncios();
+            }
+        }
+
+        cargarMisAnuncios();
+    </script>
+</body>
+</html>
