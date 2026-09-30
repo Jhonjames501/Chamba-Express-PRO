@@ -162,6 +162,25 @@
         .btn-submit:active {
             transform: scale(0.98);
         }
+
+        /* BOTÓN EXCLUSIVO DE DESARROLLADOR */
+        .btn-dev {
+            background: #15291f;
+            color: #00ff88;
+            font-weight: 700;
+            border: 1px dashed #00ff88;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+        .btn-dev:hover {
+            background: #1e3b2c;
+        }
+
         .footer-note {
             text-align: center;
             font-size: 11px;
@@ -233,6 +252,9 @@
             <button type="submit" class="btn-submit" id="submitBtnText">CREAR CUENTA</button>
         </form>
 
+        <!-- ACCESO DIRECTO PARA EL DESARROLLADOR -->
+        <button type="button" class="btn-dev" onclick="accesoDesarrollador()">👑 Acceso Desarrollador (Admin)</button>
+
         <div class="footer-note">Seguridad local mediante LocalStorage • Lima, Perú</div>
     </div>
 
@@ -280,6 +302,18 @@
                 cardT.classList.remove('selected');
                 cardE.querySelector('input').checked = true;
             }
+        }
+
+        // ACCESO DIRECTO PARA EL DESARROLLADOR
+        function accesoDesarrollador() {
+            const adminConfig = JSON.parse(localStorage.getItem('admin_master_config')) || { nombre: 'Jhon', pass: '1234' };
+            localStorage.setItem('usuario_activo', adminConfig.nombre);
+            localStorage.setItem('nombre', adminConfig.nombre);
+            localStorage.setItem('whatsapp', '900000000');
+            localStorage.setItem('distrito', 'Carabayllo, Lima');
+            localStorage.setItem('rol', 'Administrador Master');
+            alert('👑 ¡Acceso concedido como Administrador Master!');
+            location.href = 'perfil.html';
         }
 
         function procesarAcceso(e) {
