@@ -317,7 +317,7 @@
         const GITHUB_USER = "Jhonjames501";
         const GITHUB_REPO = "Chamba-Express-PRO";
 
-        // FUNCIÓN PARA BUSCAR Y RESALTAR LA PARTE EXACTA DEL CÓDIGO
+        // FUNCIÓN MEJORADA: BUSCA Y SELECCIONA EL BLOQUE O PÁRRAFO COMPLETO
         function buscarYResaltarCodigo() {
             const query = document.getElementById('inputBuscarCodigo').value.trim();
             const textarea = document.getElementById('editorCodigo');
@@ -330,13 +330,21 @@
 
             const index = textoCodigo.indexOf(query);
             if(index !== -1) {
-                // Selecciona y resalta el texto exacto encontrado dentro del textarea
+                // Detecta automáticamente los límites de la etiqueta o bloque completo (<...>)
+                let inicioBloque = textoCodigo.lastIndexOf('<', index);
+                let finBloque = textoCodigo.indexOf('>', index);
+
+                if(inicioBloque === -1) inicioBloque = index;
+                if(finBloque === -1) finBloque = index + query.length;
+                else finBloque += 1;
+
+                // Selecciona y resalta todo el bloque o párrafo completo
                 textarea.focus();
-                textarea.setSelectionRange(index, index + query.length);
+                textarea.setSelectionRange(inicioBloque, finBloque);
                 
-                // Hace scroll automático hacia la línea exacta del hallazgo
-                const lineasHastaIndex = textoCodigo.substring(0, index).split('\n').length;
-                const alturaLinea = 18; // altura aproximada por línea en pixeles
+                // Desplaza la vista automáticamente hacia el hallazgo
+                const lineasHastaIndex = textoCodigo.substring(0, inicioBloque).split('\n').length;
+                const alturaLinea = 18;
                 textarea.scrollTop = (lineasHastaIndex - 3) * alturaLinea;
             } else {
                 alert(`No se encontró "${query}" en este archivo.`);
