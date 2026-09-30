@@ -32,7 +32,10 @@
         }
         .input-box:focus, textarea:focus, select:focus { border-color: #00ff88; }
         
-        /* EDITOR ESTILO GITHUB PERFECTO */
+        /* EDITOR ESTILO GITHUB CON BUSCADOR INTELIGENTE */
+        .search-box-container {
+            display: flex; gap: 8px; margin-bottom: 8px;
+        }
         .editor-wrapper {
             display: flex;
             background: #0a0a0a;
@@ -72,6 +75,9 @@
 
         .btn-action {
             background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 6px;
+        }
+        .btn-search {
+            background: #222; color: #00ff88; border: 1px solid #00ff88; font-weight: 700; padding: 0 16px; border-radius: 10px; font-size: 13px; cursor: pointer;
         }
         
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -148,7 +154,7 @@
             <button class="btn-action" onclick="crearNuevoArchivoGitHub()">✨ Crear Archivo en GitHub</button>
         </div>
 
-        <!-- 2. EDITOR DE CÓDIGO CON LÍNEAS EXACTAS -->
+        <!-- 2. EDITOR DE CÓDIGO CON BUSCADOR DE LÍNEAS -->
         <div class="admin-card" style="border: 2px solid #00ff88;">
             <h3>💻 Editor de Código (Estilo GitHub)</h3>
             <div class="form-group">
@@ -157,6 +163,16 @@
                     <!-- Se llena automáticamente -->
                 </select>
             </div>
+
+            <!-- BARRA PARA ENCONTRAR PARTES PRECISAS -->
+            <div class="form-group">
+                <label>Buscar función o palabra clave en el código</label>
+                <div class="search-box-container">
+                    <input type="text" id="inputBuscarCodigo" class="input-box" placeholder="Ej: perfil, seccionAdmin, funcion...">
+                    <button type="button" class="btn-search" onclick="buscarYResaltarCodigo()">🔍 Buscar</button>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label>Código Fuente con Líneas Enumeradas</label>
                 <div class="editor-wrapper">
@@ -281,7 +297,6 @@
             }
         }
 
-        // Cargar datos en los inputs de credenciales
         document.getElementById('adminUserNombre').value = adminConfig.nombre;
         document.getElementById('adminUserPass').value = adminConfig.pass;
 
@@ -301,6 +316,32 @@
 
         const GITHUB_USER = "Jhonjames501";
         const GITHUB_REPO = "Chamba-Express-PRO";
+
+        // FUNCIÓN PARA BUSCAR Y RESALTAR LA PARTE EXACTA DEL CÓDIGO
+        function buscarYResaltarCodigo() {
+            const query = document.getElementById('inputBuscarCodigo').value.trim();
+            const textarea = document.getElementById('editorCodigo');
+            const textoCodigo = textarea.value;
+
+            if(!query) {
+                alert('Escribe una palabra o función para buscar.');
+                return;
+            }
+
+            const index = textoCodigo.indexOf(query);
+            if(index !== -1) {
+                // Selecciona y resalta el texto exacto encontrado dentro del textarea
+                textarea.focus();
+                textarea.setSelectionRange(index, index + query.length);
+                
+                // Hace scroll automático hacia la línea exacta del hallazgo
+                const lineasHastaIndex = textoCodigo.substring(0, index).split('\n').length;
+                const alturaLinea = 18; // altura aproximada por línea en pixeles
+                textarea.scrollTop = (lineasHastaIndex - 3) * alturaLinea;
+            } else {
+                alert(`No se encontró "${query}" en este archivo.`);
+            }
+        }
 
         async function cargarPanelAdmin() {
             await listarArchivosGitHub();
