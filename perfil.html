@@ -83,7 +83,7 @@
             </div>
         </div>
 
-        <!-- ACCESO AL PANEL DE ADMIN -->
+        <!-- ACCESO AL PANEL DE ADMIN (SOLO DESARROLLADOR) -->
         <div id="seccionAdmin" style="display: none;">
             <a href="admin.html" class="menu-link" style="border: 2px solid #00ff88; background: #15291f;">
                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -215,7 +215,9 @@
             }
         }
 
-        if(nombre.toLowerCase() === 'jhon') {
+        // Validación dinámica conectada a las credenciales master del panel
+        const adminConfig = JSON.parse(localStorage.getItem('admin_master_config')) || { nombre: 'Jhon', pass: '1234' };
+        if(nombre.toLowerCase().trim() === adminConfig.nombre.toLowerCase().trim()) {
             document.getElementById('seccionAdmin').style.display = 'block';
         }
 
