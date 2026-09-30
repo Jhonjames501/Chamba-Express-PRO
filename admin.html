@@ -200,7 +200,7 @@
             <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Publicar Función para Todos</button>
         </div>
         <div class="admin-card">
-            <h3>⚙️️ Funciones Activas</h3>
+            <h3>⚙️ Funciones Activas</h3>
             <div id="listaFuncionesAdmin"></div>
         </div>
 
@@ -266,13 +266,19 @@
     </nav>
 
     <script>
-        // Verificación dinámica de Administrador Master
+        // SEGURIDAD MAESTRA CON CLAVE INTEGRADA
         const adminConfig = JSON.parse(localStorage.getItem('admin_master_config')) || { nombre: 'Jhon', pass: '1234' };
-        const usuarioActual = localStorage.getItem('nombre') || '';
+        let esAdminValido = localStorage.getItem('admin_autorizado') === 'true';
 
-        if(usuarioActual.toLowerCase().trim() !== adminConfig.nombre.toLowerCase().trim()) {
-            alert('⚠️️ Acceso restringido.');
-            location.href = 'index.html';
+        if (!esAdminValido) {
+            let claveIngresada = prompt("👑 Ingrese la contraseña de Administrador Master:");
+            if (claveIngresada === adminConfig.pass) {
+                localStorage.setItem('admin_autorizado', 'true');
+                alert('¡Acceso concedido al Panel Master!');
+            } else {
+                alert('⚠️ Contraseña incorrecta.');
+                location.href = 'index.html';
+            }
         }
 
         // Cargar datos en los inputs de credenciales
@@ -289,7 +295,6 @@
             }
 
             localStorage.setItem('admin_master_config', JSON.stringify({ nombre: nuevoNombre, pass: nuevaPass }));
-            localStorage.setItem('nombre', nuevoNombre); // Actualiza sesión activa
             alert('¡Credenciales de Administrador actualizadas con éxito!');
             location.reload();
         }
