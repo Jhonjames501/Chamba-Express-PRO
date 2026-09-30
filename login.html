@@ -3,350 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso - Chamba Express Lima</title>
+    <title>Acceso - Chamba Express</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background-image: radial-gradient(circle at 50% 10%, rgba(0, 255, 136, 0.08) 0%, transparent 60%);
+        body { background-color: #121212; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        .login-card {
+            background: #181818; border: 1px solid #333; border-radius: 20px; padding: 24px; width: 100%; max-width: 400px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
         }
-        .login-container {
-            width: 100%;
-            max-width: 420px;
-            background: #181818;
-            border: 1px solid #2a2a2a;
-            border-radius: 24px;
-            padding: 30px 24px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-            position: relative;
-            overflow: hidden;
-        }
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, #00b064, #00ff88, #b6ff6e);
-        }
-        .brand-header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .brand-logo {
-            width: 54px; height: 54px;
-            background: linear-gradient(135deg, #00b064, #00ff88);
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 12px auto;
-            font-size: 26px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-        }
-        .brand-header h1 {
-            font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px;
-        }
-        .brand-header p {
-            font-size: 13px; color: #888; margin-top: 4px;
-        }
+        .logo-box { width: 50px; height: 50px; background: linear-gradient(135deg, #00b064 0%, #00ff88 100%); border-radius: 12px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .title { text-align: center; font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+        .subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
 
-        /* Pestañas de modo (Registrarse / Iniciar Sesión) */
-        .tab-toggle {
-            display: flex;
-            background: #121212;
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 20px;
-            border: 1px solid #2a2a2a;
-        }
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #888;
-            padding: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 9px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .tab-btn.active {
-            background: #222;
-            color: #00ff88;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
+        .tabs { display: flex; background: #121212; border-radius: 10px; padding: 4px; margin-bottom: 20px; border: 1px solid #333; }
+        .tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .tab.active { background: #00ff88; color: #121212; }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
-        .form-group label {
-            display: block; font-size: 12px; font-weight: 600; color: #b6ff6e; margin-bottom: 6px;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 11px; color: #b6ff6e; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
         .input-box {
-            width: 100%;
-            background: #121212;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 12px 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
+            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none;
         }
-        .input-box:focus {
-            border-color: #00ff88;
-        }
+        .input-box:focus { border-color: #00ff88; }
 
-        /* Selección de Roles Estilizada */
-        .roles-label {
-            font-size: 12px; font-weight: 600; color: #b6ff6e; margin-bottom: 8px;
-            text-transform: uppercase; letter-spacing: 0.5px; display: block;
+        .rol-selector { display: flex; gap: 10px; margin-bottom: 20px; }
+        .rol-option {
+            flex: 1; background: #121212; border: 1px solid #333; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: #888;
         }
-        .roles-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .role-card {
-            background: #121212;
-            border: 2px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .role-card input[type="radio"] {
-            display: none;
-        }
-        .role-card.selected {
-            border-color: #00ff88;
-            background: rgba(0, 255, 136, 0.05);
-        }
-        .role-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-        .role-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .role-desc {
-            font-size: 10px;
-            color: #888;
-            margin-top: 2px;
-        }
+        .rol-option.selected { border-color: #00ff88; color: #00ff88; background: #15291f; }
 
         .btn-submit {
-            background: linear-gradient(135deg, #00b064, #00ff88);
-            color: #121212;
-            font-weight: 800;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.25);
-            transition: transform 0.1s;
+            background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer;
         }
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-        .footer-note {
-            text-align: center;
-            font-size: 11px;
-            color: #666;
-            margin-top: 16px;
-        }
+        .footer-text { text-align: center; font-size: 10px; color: #666; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
-        <div class="brand-header">
-            <div class="brand-logo">💼</div>
-            <h1>Chamba Express</h1>
-            <p>El portal de empleos diarios en Lima</p>
+    <div class="login-card">
+        <div class="logo-box">💼</div>
+        <h1 class="title">Chamba Express</h1>
+        <p class="subtitle">El portal de empleos diarios en Lima</p>
+
+        <div class="tabs">
+            <div id="tabReg" class="tab active" onclick="cambiarModo('reg')">Registrarse</div>
+            <div id="tabLog" class="tab" onclick="cambiarModo('log')">Iniciar Sesión</div>
         </div>
 
-        <!-- Pestañas -->
-        <div class="tab-toggle">
-            <button type="button" class="tab-btn active" id="btnTabRegistro" onclick="cambiarModo('registro')">Registrarse</button>
-            <button type="button" class="tab-btn" id="btnTabLogin" onclick="cambiarModo('login')">Iniciar Sesión</button>
+        <div id="formContainer">
+            <!-- Los campos se cargan dinámicamente -->
         </div>
-
-        <!-- Formulario -->
-        <form id="authForm" onsubmit="procesarAcceso(event)">
-            
-            <div class="form-group">
-                <label>Usuario o Correo</label>
-                <input type="text" id="username" class="input-box" placeholder="Ej: jhon_lima" required>
-            </div>
-
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" id="password" class="input-box" placeholder="••••••••" required>
-            </div>
-
-            <!-- Campos adicionales solo para Registro -->
-            <div id="camposRegistro">
-                <div class="form-group">
-                    <label>Nombre Completo</label>
-                    <input type="text" id="nombreCompleto" class="input-box" placeholder="Ej: Jhon Espinoza">
-                </div>
-                <div class="form-group">
-                    <label>WhatsApp de Contacto</label>
-                    <input type="tel" id="whatsapp" class="input-box" placeholder="912345678">
-                </div>
-                <div class="form-group">
-                    <label>Distrito en Lima</label>
-                    <input type="text" id="distrito" class="input-box" placeholder="Ej: Carabayllo">
-                </div>
-
-                <span class="roles-label">Selecciona tu Rol</span>
-                <div class="roles-grid">
-                    <label class="role-card selected" id="cardTrabajador" onclick="seleccionarRol('trabajador')">
-                        <input type="radio" name="rol" value="trabajador" checked>
-                        <div class="role-icon">🙋‍♂️</div>
-                        <div class="role-title">Trabajador</div>
-                        <div class="role-desc">Busco chamba</div>
-                    </label>
-                    <label class="role-card" id="cardEmpleador" onclick="seleccionarRol('empleador')">
-                        <input type="radio" name="rol" value="empleador">
-                        <div class="role-icon">🏢</div>
-                        <div class="role-title">Empleador</div>
-                        <div class="role-desc">Publico chambas</div>
-                    </label>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-submit" id="submitBtnText">CREAR CUENTA</button>
-        </form>
-
-        <div class="footer-note">Seguridad local mediante LocalStorage • Lima, Perú</div>
     </div>
 
     <script>
-        let modoActual = 'registro'; // 'registro' o 'login'
+        let modoActual = 'reg';
+        let rolSeleccionado = 'Trabajador';
 
         function cambiarModo(modo) {
             modoActual = modo;
-            const camposReg = document.getElementById('camposRegistro');
-            const btnReg = document.getElementById('btnTabRegistro');
-            const btnLog = document.getElementById('btnTabLogin');
-            const submitBtn = document.getElementById('submitBtnText');
-
-            if(modo === 'registro') {
-                btnReg.classList.add('active');
-                btnLog.classList.remove('active');
-                camposReg.style.display = 'block';
-                submitBtn.innerText = 'CREAR CUENTA';
-                document.getElementById('username').required = true;
-                document.getElementById('password').required = true;
-                document.getElementById('nombreCompleto').required = true;
-                document.getElementById('whatsapp').required = true;
-                document.getElementById('distrito').required = true;
-            } else {
-                btnLog.classList.add('active');
-                btnReg.classList.remove('active');
-                camposReg.style.display = 'none';
-                submitBtn.innerText = 'INGRESAR A LA APP';
-                document.getElementById('nombreCompleto').required = false;
-                document.getElementById('whatsapp').required = false;
-                document.getElementById('distrito').required = false;
-            }
+            document.getElementById('tabReg').className = modo === 'reg' ? 'tab active' : 'tab';
+            document.getElementById('tabLog').className = modo === 'log' ? 'tab active' : 'tab';
+            renderForm();
         }
 
         function seleccionarRol(rol) {
-            const cardT = document.getElementById('cardTrabajador');
-            const cardE = document.getElementById('cardEmpleador');
-            
-            if(rol === 'trabajador') {
-                cardT.classList.add('selected');
-                cardE.classList.remove('selected');
-                cardT.querySelector('input').checked = true;
+            rolSeleccionado = rol;
+            document.getElementById('btnRolTrabajador').className = rol === 'Trabajador' ? 'rol-option selected' : 'rol-option';
+            document.getElementById('rolEmpleador').className = rol === 'Empleador' ? 'rol-option selected' : 'rol-option';
+        }
+
+        function renderForm() {
+            let container = document.getElementById('formContainer');
+            if (modoActual === 'reg') {
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label>Usuario o Correo</label>
+                        <input type="text" id="regUser" class="input-box" placeholder="Ej: jhon_lima">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="regPass" class="input-box" placeholder="********">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="regNombre" class="input-box" placeholder="Ej: Jhon Espinoza">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp de Contacto</label>
+                        <input type="text" id="regTel" class="input-box" placeholder="912345678">
+                    </div>
+                    <div class="form-group">
+                        <label>Distrito en Lima</label>
+                        <input type="text" id="regDistrito" class="input-box" placeholder="Ej: Carabayllo">
+                    </div>
+                    <div class="form-group">
+                        <label>Selecciona tu Rol</label>
+                        <div class="rol-selector">
+                            <div id="btnRolTrabajador" class="rol-option selected" onclick="seleccionarRol('Trabajador')">👷‍♂️ Trabajador</div>
+                            <div id="rolEmpleador" class="rol-option" onclick="seleccionarRol('Empleador')">🏢 Empleador</div>
+                        </div>
+                    </div>
+                    <button class="btn-submit" onclick="registrarUsuario()">CREAR CUENTA</button>
+                `;
             } else {
-                cardE.classList.add('selected');
-                cardT.classList.remove('selected');
-                cardE.querySelector('input').checked = true;
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label>Usuario o Correo</label>
+                        <input type="text" id="logUser" class="input-box" placeholder="Ej: Jhon">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="logPass" class="input-box" placeholder="********">
+                    </div>
+                    <button class="btn-submit" onclick="iniciarSesion()" style="margin-top: 10px;">INGRESAR A LA APP</button>
+                `;
             }
         }
 
-        function procesarAcceso(e) {
-            e.preventDefault();
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
+        function registrarUsuario() {
+            let user = document.getElementById('regUser').value.trim();
+            let pass = document.getElementById('regPass').value.trim();
+            let nombre = document.getElementById('regNombre').value.trim();
+            let tel = document.getElementById('regTel').value.trim();
+            let distrito = document.getElementById('regDistrito').value.trim();
 
-            let usuariosRegistrados = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+            if(!user || !pass || !nombre) {
+                alert('Por favor completa los campos principales.');
+                return;
+            }
 
-            if(modoActual === 'registro') {
-                // Verificar si ya existe el usuario
-                if(usuariosRegistrados.some(u => u.username === user)) {
-                    alert('⚠️ Este usuario ya existe. Elige otro o inicia sesión.');
-                    return;
-                }
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+            usuarios.push({ user, pass, nombre, tel, distrito, rol: rolSeleccionado });
+            localStorage.setItem('usuarios_db', JSON.stringify(usuarios));
 
-                const nombre = document.getElementById('nombreCompleto').value.trim();
-                const whatsapp = document.getElementById('whatsapp').value.trim();
-                const distrito = document.getElementById('distrito').value.trim();
-                const rol = document.querySelector('input[name="rol"]:checked').value;
+            // Guardar sesión activa
+            localStorage.setItem('nombre', nombre);
+            localStorage.setItem('telefono', tel);
+            localStorage.setItem('distrito', distrito);
+            localStorage.setItem('rol', rolSeleccionado);
 
-                const nuevoUsuario = { username: user, password: pass, nombre, whatsapp, distrito, rol };
-                usuariosRegistrados.push(nuevoUsuario);
-                localStorage.setItem('usuarios_db', JSON.stringify(usuariosRegistrados));
+            alert('¡Cuenta creada con éxito!');
+            location.href = 'index.html';
+        }
 
-                // Guardar sesión activa actual
-                localStorage.setItem('usuario_activo', user);
-                localStorage.setItem('nombre', nombre);
-                localStorage.setItem('whatsapp', whatsapp);
-                localStorage.setItem('distrito', distrito);
-                localStorage.setItem('rol', rol);
+        function iniciarSesion() {
+            let user = document.getElementById('logUser').value.trim();
+            let pass = document.getElementById('logPass').value.trim();
 
-                // Si es trabajador, inicializar su calificación si no existe
-                if(rol === 'trabajador' && !localStorage.getItem(`califs_${nombre}`)) {
-                    const datosCalif = {
-                        promedio: 5.0,
-                        total: 1,
-                        comentarios: [
-                            { autor: "Sistema Chamba Express", estrellas: 5, texto: "¡Cuenta creada con éxito! Bienvenido a la plataforma." }
-                        ]
-                    };
-                    localStorage.setItem(`califs_${nombre}`, JSON.stringify(datosCalif));
-                }
+            if(!user) {
+                alert('Ingresa tu usuario.');
+                return;
+            }
 
-                alert('¡Cuenta creada con éxito! Bienvenido a Chamba Express.');
-                location.href = 'index.html';
+            // ACCESO MAESTRO EXCLUSIVO PARA EL DESARROLLADOR
+            const adminConfig = JSON.parse(localStorage.getItem('admin_master_config')) || { nombre: 'Jhon', pass: '1234' };
+            if(user.toLowerCase() === adminConfig.nombre.toLowerCase()) {
+                localStorage.setItem('nombre', adminConfig.nombre);
+                localStorage.setItem('rol', 'Administrador Master');
+                alert('👑 ¡Bienvenido, Administrador Master!');
+                location.href = 'perfil.html';
+                return;
+            }
 
-            } else {
-                // Modo Login
-                const encontrado = usuariosRegistrados.find(u => u.username === user && u.password === pass);
-                
-                if(!encontrado) {
-                    alert('❌ Usuario o contraseña incorrectos. Verifica tus datos o regístrate.');
-                    return;
-                }
+            // Buscar en la base de datos de usuarios normales
+            let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+            let encontrado = usuarios.find(u => u.user.toLowerCase() === user.toLowerCase());
 
-                // Cargar datos a la sesión activa
-                localStorage.setItem('usuario_activo', encontrado.username);
+            if(encontrado) {
                 localStorage.setItem('nombre', encontrado.nombre);
-                localStorage.setItem('whatsapp', encontrado.whatsapp);
-                localStorage.setItem('distrito', encontrado.distrito);
-                localStorage.setItem('rol', encontrado.rol);
-
+                localStorage.setItem('telefono', encontrado.tel || '');
+                localStorage.setItem('distrito', encontrado.distrito || 'Lima');
+                localStorage.setItem('rol', encontrado.rol || 'Usuario');
                 alert(`¡Bienvenido de nuevo, ${encontrado.nombre}!`);
                 location.href = 'index.html';
+            } else {
+                // Si no existe, lo creamos al vuelo para facilitarlo
+                localStorage.setItem('nombre', user);
+                localStorage.setItem('rol', 'Usuario');
+                alert(`¡Sesión iniciada como ${user}!`);
+                location.href = 'index.html';
             }
         }
+
+        renderForm();
     </script>
 </body>
 </html>
