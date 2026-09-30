@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso - Chamba Express</title>
+    <title>Acceso y Registro - Chamba Express PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: #121212; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         
         .login-card {
-            background: #181818; border: 1px solid #333; border-radius: 20px; padding: 24px; width: 100%; max-width: 400px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            background: #181818; border: 1px solid #333; border-radius: 20px; padding: 24px; width: 100%; max-width: 420px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
         }
-        .logo-box { width: 50px; height: 50px; background: linear-gradient(135deg, #00b064 0%, #00ff88 100%); border-radius: 12px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .title { text-align: center; font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-        .subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
+        .logo-box { width: 55px; height: 55px; background: linear-gradient(135deg, #00b064 0%, #00ff88 100%); border-radius: 14px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 15px rgba(0,255,136,0.3); }
+        .title { text-align: center; font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+        .subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; font-weight: 500; }
 
-        .tabs { display: flex; background: #121212; border-radius: 10px; padding: 4px; margin-bottom: 20px; border: 1px solid #333; }
-        .tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .tabs { display: flex; background: #121212; border-radius: 12px; padding: 4px; margin-bottom: 20px; border: 1px solid #333; }
+        .tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; font-weight: 700; color: #888; cursor: pointer; border-radius: 8px; transition: 0.2s; }
         .tab.active { background: #00ff88; color: #121212; }
 
         .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 11px; color: #b6ff6e; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+        .form-group label { display: block; font-size: 11px; color: #b6ff6e; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
         .input-box {
-            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none;
+            width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s;
         }
-        .input-box:focus { border-color: #00ff88; }
+        .input-box:focus { border-color: #00ff88; box-shadow: 0 0 10px rgba(0,255,136,0.15); }
 
         .rol-selector { display: flex; gap: 10px; margin-bottom: 20px; }
         .rol-option {
-            flex: 1; background: #121212; border: 1px solid #333; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: #888;
+            flex: 1; background: #121212; border: 1px solid #333; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: #888; transition: 0.2s;
         }
         .rol-option.selected { border-color: #00ff88; color: #00ff88; background: #15291f; }
 
         .btn-submit {
-            background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer;
+            background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 14px; border-radius: 10px; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,255,136,0.2);
         }
+        .btn-submit:hover { background: #00cc6a; }
         .footer-text { text-align: center; font-size: 10px; color: #666; margin-top: 15px; }
     </style>
 </head>
@@ -53,8 +54,9 @@
         </div>
 
         <div id="formContainer">
-            <!-- Los campos se cargan dinámicamente -->
+            <!-- Contenido dinámico completo -->
         </div>
+        <div class="footer-text">Sistema de Autenticación Local • Chamba Express PRO</div>
     </div>
 
     <script>
@@ -130,21 +132,31 @@
             let distrito = document.getElementById('regDistrito').value.trim();
 
             if(!user || !pass || !nombre) {
-                alert('Por favor completa los campos principales.');
+                alert('Por favor completa los campos principales de registro.');
                 return;
             }
 
             let usuarios = JSON.parse(localStorage.getItem('usuarios_db')) || [];
+            
+            // Verificamos si el usuario ya existe
+            let existe = usuarios.find(u => u.user.toLowerCase() === user.toLowerCase());
+            if(existe) {
+                alert('⚠️️ Este usuario ya está registrado. Intenta iniciar sesión.');
+                cambiarModo('log');
+                return;
+            }
+
             usuarios.push({ user, pass, nombre, tel, distrito, rol: rolSeleccionado });
             localStorage.setItem('usuarios_db', JSON.stringify(usuarios));
 
-            // Guardar sesión activa
+            // Guardar sesión activa con todos los metadatos completos
             localStorage.setItem('nombre', nombre);
             localStorage.setItem('telefono', tel);
             localStorage.setItem('distrito', distrito);
             localStorage.setItem('rol', rolSeleccionado);
+            localStorage.setItem('usuario_activo', user);
 
-            alert('¡Cuenta creada con éxito!');
+            alert('¡Cuenta creada e iniciada con éxito!');
             location.href = 'index.html';
         }
 
@@ -153,15 +165,18 @@
             let pass = document.getElementById('logPass').value.trim();
 
             if(!user) {
-                alert('Ingresa tu usuario.');
+                alert('Por favor ingresa tu usuario.');
                 return;
             }
 
-            // ACCESO MAESTRO EXCLUSIVO PARA EL DESARROLLADOR
+            // ACCESO EXCLUSIVO DE ADMINISTRADOR MASTER (DINÁMICO)
             const adminConfig = JSON.parse(localStorage.getItem('admin_master_config')) || { nombre: 'Jhon', pass: '1234' };
             if(user.toLowerCase() === adminConfig.nombre.toLowerCase()) {
                 localStorage.setItem('nombre', adminConfig.nombre);
+                localStorage.setItem('telefono', '900000000');
+                localStorage.setItem('distrito', 'Carabayllo, Lima');
                 localStorage.setItem('rol', 'Administrador Master');
+                localStorage.setItem('usuario_activo', adminConfig.nombre);
                 alert('👑 ¡Bienvenido, Administrador Master!');
                 location.href = 'perfil.html';
                 return;
@@ -173,16 +188,20 @@
 
             if(encontrado) {
                 localStorage.setItem('nombre', encontrado.nombre);
-                localStorage.setItem('telefono', encontrado.tel || '');
+                localStorage.setItem('telefono', encontrado.tel || 'No registrado');
                 localStorage.setItem('distrito', encontrado.distrito || 'Lima');
-                localStorage.setItem('rol', encontrado.rol || 'Usuario');
+                localStorage.setItem('rol', encontrado.rol || 'Trabajador');
+                localStorage.setItem('usuario_activo', encontrado.user);
                 alert(`¡Bienvenido de nuevo, ${encontrado.nombre}!`);
                 location.href = 'index.html';
             } else {
-                // Si no existe, lo creamos al vuelo para facilitarlo
+                // Registro rápido si es un usuario que viene de versiones anteriores
                 localStorage.setItem('nombre', user);
-                localStorage.setItem('rol', 'Usuario');
-                alert(`¡Sesión iniciada como ${user}!`);
+                localStorage.setItem('telefono', 'No registrado');
+                localStorage.setItem('distrito', 'Lima');
+                localStorage.setItem('rol', 'Trabajador');
+                localStorage.setItem('usuario_activo', user);
+                alert(`¡Sesión iniciada con éxito como ${user}!`);
                 location.href = 'index.html';
             }
         }
