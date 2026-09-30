@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Anuncios - Chamba Express</title>
+    <title>Mis Anuncios - Chamba Express PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
@@ -24,23 +24,25 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .chamba-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-        .chamba-info { font-size: 12px; color: #bbb; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
+        .chamba-info { font-size: 12px; color: #bbb; margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
         
         .btn-group { display: flex; gap: 8px; }
-        .btn-edit { background: #333; color: #00ff88; border: 1px solid #00ff88; font-weight: 700; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; flex: 1; }
-        .btn-delete { background: #ff4d4d; color: #fff; font-weight: 700; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; flex: 1; }
+        .btn-edit { background: #1a2e23; color: #00ff88; border: 1px solid #00ff88; font-weight: 700; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; flex: 1; text-align: center; }
+        .btn-delete { background: #331a1a; color: #ff4d4d; border: 1px solid #ff4d4d; font-weight: 700; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; flex: 1; text-align: center; }
 
         .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);
             justify-content: center; align-items: center; padding: 20px; z-index: 200;
         }
-        .modal-content { background: #181818; border: 1px solid #00ff88; border-radius: 16px; padding: 20px; width: 100%; max-width: 450px; }
+        .modal-content { background: #181818; border: 1px solid #00ff88; border-radius: 16px; padding: 20px; width: 100%; max-width: 450px; box-shadow: 0 8px 30px rgba(0,255,136,0.2); }
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 12px; color: #b6ff6e; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
         .input-box, textarea {
             width: 100%; background: #121212; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-size: 13px; outline: none;
         }
-        .btn-action { background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px; }
+        .input-box:focus, textarea:focus { border-color: #00ff88; }
+        .btn-action { background: #00ff88; color: #121212; font-weight: 800; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px; }
+        .btn-cancel { background: #333; color: #fff; border: none; width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px; }
 
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
         .nav-item { text-align: center; color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -65,7 +67,7 @@
     <!-- Modal para Editar Anuncio -->
     <div id="modalEditar" class="modal">
         <div class="modal-content">
-            <h3 style="color: #00ff88; font-size: 16px; margin-bottom: 12px;">✏️ Editar Anuncio</h3>
+            <h3 style="color: #00ff88; font-size: 16px; margin-bottom: 14px;">✏️ Editar Anuncio Publicado</h3>
             <input type="hidden" id="editId">
             <div class="form-group">
                 <label>Título del Puesto</label>
@@ -80,11 +82,11 @@
                 <input type="text" id="editPago" class="input-box">
             </div>
             <div class="form-group">
-                <label>Descripción</label>
+                <label>Descripción del Trabajo</label>
                 <textarea id="editDesc" rows="3" class="input-box"></textarea>
             </div>
-            <button class="btn-action" onclick="guardarEdicionAnuncio()">Guardar Cambios</button>
-            <button onclick="cerrarModal()" style="background: #333; color: #fff; border: none; width: 100%; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 6px;">Cancelar</button>
+            <button class="btn-action" onclick="guardarEdicionAnuncio()">Guardar Cambios en Vivo</button>
+            <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
         </div>
     </div>
 
@@ -97,36 +99,28 @@
     </nav>
 
     <script>
-        const usuarioActual = localStorage.getItem('nombre') || '';
-
         function cargarMisAnuncios() {
             let avisos = JSON.parse(localStorage.getItem('avisos')) || [];
-            
-            // Filtramos por autor exacto o por coincidencia si el nombre está en las tarjetas de la app principal
-            let misAvisos = avisos.filter(a => {
-                if(!a.autor) return false;
-                return a.autor.toLowerCase().trim() === usuarioActual.toLowerCase().trim();
-            });
-            
             let contenedor = document.getElementById('listaMisAnuncios');
             let html = '';
 
-            if (misAvisos.length === 0) {
+            if (avisos.length === 0) {
                 html = `
-                    <div style="text-align:center; padding: 30px 0;">
-                        <p style="color:#888; font-size:13px; margin-bottom:10px;">No se encontraron anuncios creados por "${usuarioActual}".</p>
-                        <p style="color:#aaa; font-size:11px;">Nota: Los anuncios creados previamente sin tu nombre de usuario exacto se pueden ver desde el Panel Admin.</p>
+                    <div style="text-align:center; padding: 40px 20px;">
+                        <p style="color:#888; font-size:14px; margin-bottom:8px;">No hay anuncios creados todavía.</p>
+                        <p style="color:#666; font-size:12px;">Publica una chamba desde la app para verla reflejada aquí.</p>
                     </div>
                 `;
             } else {
-                misAvisos.forEach(a => {
+                avisos.forEach(a => {
                     html += `
                         <div class="chamba-card">
-                            <div class="chamba-title">${a.titulo}</div>
+                            <div class="chamba-title">💼 ${a.titulo}</div>
                             <div class="chamba-info">
-                                <span>📍 Distrito: ${a.distrito}</span>
-                                <span>💰 Pago: ${a.pago}</span>
-                                <span>📝 ${a.desc || 'Sin descripción'}</span>
+                                <span>📍 <strong>Distrito:</strong> ${a.distrito}</span>
+                                <span>💰 <strong>Pago:</strong> ${a.pago}</span>
+                                <span>🏷️ <strong>Rubro:</strong> ${a.rubro || 'General'}</span>
+                                <span>📝 ${a.desc || 'Sin descripción detallada'}</span>
                             </div>
                             <div class="btn-group">
                                 <button class="btn-edit" onclick="abrirEditar(${a.id})">✏️ Editar</button>
@@ -153,9 +147,9 @@
             let aviso = avisos.find(a => a.id === id);
             if(aviso) {
                 document.getElementById('editId').value = aviso.id;
-                document.getElementById('editTitulo').value = aviso.titulo;
-                document.getElementById('editDistrito').value = aviso.distrito;
-                document.getElementById('editPago').value = aviso.pago;
+                document.getElementById('editTitulo').value = aviso.titulo || '';
+                document.getElementById('editDistrito').value = aviso.distrito || '';
+                document.getElementById('editPago').value = aviso.pago || '';
                 document.getElementById('editDesc').value = aviso.desc || '';
                 document.getElementById('modalEditar').style.display = 'flex';
             }
