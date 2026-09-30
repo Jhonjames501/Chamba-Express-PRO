@@ -120,6 +120,20 @@
             </div>
         </div>
 
+        <!-- 0. CAMBIAR CREDENCIALES DE DESARROLLADOR -->
+        <div class="admin-card" style="border: 2px solid #b6ff6e;">
+            <h3>🔐 Mis Credenciales de Administrador</h3>
+            <div class="form-group">
+                <label>Nombre de Administrador</label>
+                <input type="text" id="adminUserNombre" class="input-box" placeholder="Ej: Jhon">
+            </div>
+            <div class="form-group">
+                <label>Contraseña Maestra</label>
+                <input type="password" id="adminUserPass" class="input-box" placeholder="Tu clave secreta">
+            </div>
+            <button class="btn-action" onclick="guardarCredencialesAdmin()">Actualizar Mis Credenciales</button>
+        </div>
+
         <!-- 1. CREAR NUEVO ARCHIVO -->
         <div class="admin-card" style="border: 2px dashed #00ff88;">
             <h3>📄 Crear un Nuevo Archivo en la App</h3>
@@ -186,7 +200,7 @@
             <button class="btn-action" onclick="crearNuevaFuncionApp()">+ Publicar Función para Todos</button>
         </div>
         <div class="admin-card">
-            <h3>⚙️ Funciones Activas</h3>
+            <h3>⚙️️ Funciones Activas</h3>
             <div id="listaFuncionesAdmin"></div>
         </div>
 
@@ -252,10 +266,32 @@
     </nav>
 
     <script>
+        // Verificación dinámica de Administrador Master
+        const adminConfig = JSON.parse(localStorage.getItem('admin_master_config')) || { nombre: 'Jhon', pass: '1234' };
         const usuarioActual = localStorage.getItem('nombre') || '';
-        if(usuarioActual.toLowerCase() !== 'jhon') {
-            alert('⚠️ Acceso restringido.');
+
+        if(usuarioActual.toLowerCase().trim() !== adminConfig.nombre.toLowerCase().trim()) {
+            alert('⚠️️ Acceso restringido.');
             location.href = 'index.html';
+        }
+
+        // Cargar datos en los inputs de credenciales
+        document.getElementById('adminUserNombre').value = adminConfig.nombre;
+        document.getElementById('adminUserPass').value = adminConfig.pass;
+
+        function guardarCredencialesAdmin() {
+            let nuevoNombre = document.getElementById('adminUserNombre').value.trim();
+            let nuevaPass = document.getElementById('adminUserPass').value.trim();
+
+            if(!nuevoNombre || !nuevaPass) {
+                alert('El nombre y la contraseña no pueden estar vacíos.');
+                return;
+            }
+
+            localStorage.setItem('admin_master_config', JSON.stringify({ nombre: nuevoNombre, pass: nuevaPass }));
+            localStorage.setItem('nombre', nuevoNombre); // Actualiza sesión activa
+            alert('¡Credenciales de Administrador actualizadas con éxito!');
+            location.reload();
         }
 
         const GITHUB_USER = "Jhonjames501";
